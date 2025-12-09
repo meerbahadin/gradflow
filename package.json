@@ -67,7 +67,7 @@
     "eslint-config-next": "15.5.2",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.12",
-    "next": "15.5.2",
+    "next": "15.5.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "shiki": "^3.12.2",
