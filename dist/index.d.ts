@@ -1,4 +1,4 @@
-import React from 'react';
+import * as react_jsx_runtime from 'react/jsx-runtime';
 
 type RGB = {
     r: number;
@@ -32,26 +32,26 @@ type GradFlowProps = {
     className?: string;
 };
 
-declare function GradFlow({ config: initialConfig, preset, paused, className, }: GradFlowProps): React.JSX.Element;
+declare function GradFlow({ config: initialConfig, preset, paused, className, }: GradFlowProps): react_jsx_runtime.JSX.Element;
 
 declare const DEFAULT_CONFIG: GradientConfig;
 declare const GRADIENT_TYPE_NUMBER: Record<GradientType, number>;
 declare const PRESETS: {
     readonly cosmic: {
         readonly color1: {
-            readonly r: 85;
-            readonly g: 4;
-            readonly b: 129;
+            readonly r: 91;
+            readonly g: 33;
+            readonly b: 182;
         };
         readonly color2: {
-            readonly r: 0;
-            readonly g: 145;
-            readonly b: 255;
+            readonly r: 30;
+            readonly g: 64;
+            readonly b: 175;
         };
         readonly color3: {
-            readonly r: 0;
-            readonly g: 4;
-            readonly b: 5;
+            readonly r: 8;
+            readonly g: 5;
+            readonly b: 24;
         };
         readonly speed: 0.4;
         readonly scale: 1.2;
@@ -60,9 +60,9 @@ declare const PRESETS: {
     };
     readonly matrix: {
         readonly color1: {
-            readonly r: 34;
-            readonly g: 54;
-            readonly b: 145;
+            readonly r: 6;
+            readonly g: 20;
+            readonly b: 12;
         };
         readonly color2: {
             readonly r: 0;
@@ -70,135 +70,135 @@ declare const PRESETS: {
             readonly b: 0;
         };
         readonly color3: {
-            readonly r: 147;
-            readonly g: 251;
-            readonly b: 173;
+            readonly r: 74;
+            readonly g: 255;
+            readonly b: 128;
         };
         readonly speed: 0.8;
         readonly scale: 1;
         readonly type: GradientType;
-        readonly noise: 0.1;
+        readonly noise: 0.12;
     };
     readonly electric: {
         readonly color1: {
-            readonly r: 5;
-            readonly g: 65;
-            readonly b: 245;
+            readonly r: 14;
+            readonly g: 82;
+            readonly b: 255;
         };
         readonly color2: {
-            readonly r: 178;
-            readonly g: 224;
-            readonly b: 209;
+            readonly r: 130;
+            readonly g: 220;
+            readonly b: 255;
         };
         readonly color3: {
-            readonly r: 87;
-            readonly g: 229;
-            readonly b: 149;
+            readonly r: 255;
+            readonly g: 255;
+            readonly b: 255;
         };
         readonly speed: 0.9;
         readonly scale: 2;
         readonly type: GradientType;
-        readonly noise: 0.18;
+        readonly noise: 0.16;
     };
     readonly inferno: {
         readonly color1: {
-            readonly r: 77;
+            readonly r: 120;
             readonly g: 0;
             readonly b: 0;
         };
         readonly color2: {
-            readonly r: 0;
+            readonly r: 20;
             readonly g: 0;
             readonly b: 0;
         };
         readonly color3: {
             readonly r: 255;
-            readonly g: 187;
+            readonly g: 140;
             readonly b: 0;
         };
         readonly speed: 0.9;
         readonly scale: 1.1;
         readonly type: GradientType;
-        readonly noise: 0.18;
+        readonly noise: 0.2;
     };
     readonly mystic: {
         readonly color1: {
-            readonly r: 192;
-            readonly g: 155;
-            readonly b: 197;
+            readonly r: 210;
+            readonly g: 170;
+            readonly b: 255;
         };
         readonly color2: {
-            readonly r: 0;
+            readonly r: 10;
             readonly g: 0;
-            readonly b: 0;
+            readonly b: 30;
         };
         readonly color3: {
-            readonly r: 53;
-            readonly g: 0;
-            readonly b: 97;
+            readonly r: 80;
+            readonly g: 30;
+            readonly b: 130;
         };
-        readonly speed: 0.9;
-        readonly scale: 2;
+        readonly speed: 0.7;
+        readonly scale: 1.8;
         readonly type: GradientType;
-        readonly noise: 0.18;
+        readonly noise: 0.16;
     };
     readonly cyber: {
         readonly color1: {
-            readonly r: 102;
-            readonly g: 237;
+            readonly r: 0;
+            readonly g: 245;
             readonly b: 255;
         };
         readonly color2: {
-            readonly r: 0;
-            readonly g: 0;
-            readonly b: 0;
+            readonly r: 5;
+            readonly g: 5;
+            readonly b: 20;
         };
         readonly color3: {
-            readonly r: 0;
-            readonly g: 255;
-            readonly b: 110;
+            readonly r: 255;
+            readonly g: 0;
+            readonly b: 200;
         };
         readonly speed: 0.9;
         readonly scale: 2;
         readonly type: GradientType;
-        readonly noise: 0.18;
+        readonly noise: 0.2;
     };
     readonly neon: {
         readonly color1: {
-            readonly r: 102;
-            readonly g: 237;
-            readonly b: 255;
+            readonly r: 255;
+            readonly g: 0;
+            readonly b: 122;
         };
         readonly color2: {
-            readonly r: 0;
-            readonly g: 0;
-            readonly b: 0;
+            readonly r: 10;
+            readonly g: 10;
+            readonly b: 10;
         };
         readonly color3: {
             readonly r: 0;
             readonly g: 255;
-            readonly b: 110;
+            readonly b: 170;
         };
         readonly speed: 0.6;
-        readonly scale: 2;
+        readonly scale: 1.6;
         readonly type: GradientType;
         readonly noise: 0.18;
     };
     readonly plasma: {
         readonly color1: {
-            readonly r: 163;
-            readonly g: 106;
-            readonly b: 242;
+            readonly r: 200;
+            readonly g: 60;
+            readonly b: 255;
         };
         readonly color2: {
-            readonly r: 0;
+            readonly r: 30;
             readonly g: 0;
-            readonly b: 0;
+            readonly b: 60;
         };
         readonly color3: {
-            readonly r: 234;
-            readonly g: 130;
-            readonly b: 106;
+            readonly r: 255;
+            readonly g: 110;
+            readonly b: 60;
         };
         readonly speed: 0.6;
         readonly scale: 1.2;
