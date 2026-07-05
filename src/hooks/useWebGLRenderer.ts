@@ -225,6 +225,59 @@ const fragmentShader = `
     return clamp(color, 0.0, 1.0);
   }
 
+  float fbm(vec2 p) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    for (int i = 0; i < 4; i++) {
+      value += amplitude * advancedNoise(p);
+      p *= 2.0;
+      amplitude *= 0.5;
+    }
+    return value;
+  }
+
+  vec3 meshGradient(vec2 uv, float time) {
+    float ratio = u_resolution.x / u_resolution.y;
+    vec2 p = vec2(uv.x * ratio, uv.y);
+    float t = time * 0.6;
+
+    vec2 c1 = vec2((0.3 + 0.25 * sin(t * 0.9)) * ratio, 0.4 + 0.3 * cos(t * 0.7));
+    vec2 c2 = vec2((0.7 + 0.25 * cos(t * 0.8)) * ratio, 0.6 + 0.3 * sin(t * 1.1));
+    vec2 c3 = vec2((0.5 + 0.3 * sin(t * 0.6 + 2.0)) * ratio, 0.5 + 0.35 * cos(t * 0.9 + 4.0));
+
+    float falloff = 1.5 + u_scale * 2.5;
+    float w1 = exp(-falloff * dot(p - c1, p - c1));
+    float w2 = exp(-falloff * dot(p - c2, p - c2));
+    float w3 = exp(-falloff * dot(p - c3, p - c3));
+
+    // soft base so areas far from every blob stay colored
+    float wBase = 0.08;
+    vec3 base = mix(u_color1, u_color3, uv.y);
+
+    vec3 color = (u_color1 * w1 + u_color2 * w2 + u_color3 * w3 + base * wBase)
+               / (w1 + w2 + w3 + wBase);
+
+    return clamp(color, 0.0, 1.0);
+  }
+
+  vec3 auroraGradient(vec2 uv, float time) {
+    float t = time * 0.4;
+
+    // curtains: fbm-driven horizontal displacement, stronger near the top
+    float curve = fbm(vec2(uv.x * 2.0 * u_scale + t * 0.5, t * 0.3)) - 0.5;
+    float y = uv.y + curve * 0.5;
+
+    float band = smoothstep(0.15, 0.55, y) * smoothstep(1.05, 0.6, y);
+    float shimmer = fbm(vec2(uv.x * 5.0 * u_scale - t * 0.8, y * 3.0 + t * 0.5));
+    float intensity = band * (0.5 + 0.9 * shimmer);
+
+    // color2 is the sky, color1/color3 tint the curtains bottom-to-top
+    vec3 sky = mix(u_color2, u_color2 * 0.35, uv.y);
+    vec3 curtain = mix(u_color1, u_color3, clamp(y + (shimmer - 0.5) * 0.6, 0.0, 1.0));
+
+    return clamp(sky + curtain * intensity, 0.0, 1.0);
+  }
+
   vec3 stripeGradient(vec2 uv, float time) {
     vec2 p = ((uv * u_resolution * 2.0 - u_resolution.xy) / (u_resolution.x + u_resolution.y) * 2.0) * u_scale;
     float t = time * 0.7, a = 4.0 * p.y - sin(-p.x * 3.0 + p.y - t);
@@ -260,6 +313,10 @@ const fragmentShader = `
       color = smokeGradient(uv, time);
     } else if (u_type == 6) {
       color = stripeGradient(uv, time);
+    } else if (u_type == 7) {
+      color = meshGradient(uv, time);
+    } else if (u_type == 8) {
+      color = auroraGradient(uv, time);
     } else {
       color = animatedGradient(uv, time);
     }
@@ -273,6 +330,11 @@ const fragmentShader = `
   }
 `
 
+export interface UseWebGLRendererOptions {
+  /** Freeze the animation. A single static frame is still rendered. */
+  paused?: boolean
+}
+
 export interface UseWebGLRendererReturn {
   canvasRef: React.RefObject<HTMLCanvasElement | null>
   rendererRef: React.RefObject<Renderer | null>
@@ -281,13 +343,19 @@ export interface UseWebGLRendererReturn {
 }
 
 export function useWebGLRenderer(
-  config: GradientConfig
+  config: GradientConfig,
+  options: UseWebGLRendererOptions = {}
 ): UseWebGLRendererReturn {
+  const { paused = false } = options
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const rendererRef = useRef<Renderer | null>(null)
   const programRef = useRef<Program | null>(null)
   const meshRef = useRef<Mesh | null>(null)
-  const rafRef = useRef<number>(0)
+  const pausedRef = useRef(paused)
+  const controlsRef = useRef<{
+    sync: () => void
+    renderFrame: () => void
+  } | null>(null)
 
   const normalizedColors = useMemo(
     () => ({
@@ -332,6 +400,9 @@ export function useWebGLRenderer(
       if (programRef.current) {
         programRef.current.uniforms.u_resolution.value = [w, h]
       }
+
+      // keep the static frame crisp when resized while not animating
+      controlsRef.current?.renderFrame()
     }
 
     const program = new Program(gl, {
@@ -359,19 +430,82 @@ export function useWebGLRenderer(
     handleResize()
     window.addEventListener('resize', handleResize, { passive: true })
 
-    const startTime = performance.now()
-    const animate = (currentTime: number) => {
-      const elapsed = (currentTime - startTime) / 1000
-      program.uniforms.u_time.value = elapsed
-
-      renderer.render({ scene: mesh })
-      rafRef.current = requestAnimationFrame(animate)
+    // animation only runs while unpaused, in view, on a visible tab,
+    // and the user hasn't asked for reduced motion — otherwise a single
+    // static frame stays on screen
+    const reducedMotionQuery = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    )
+    const visibility = {
+      inView: true,
+      pageVisible: !document.hidden,
+      reducedMotion: reducedMotionQuery.matches,
     }
 
-    rafRef.current = requestAnimationFrame(animate)
+    let rafId = 0
+    let elapsed = 0
+    let lastFrameTime: number | null = null
+
+    const renderFrame = () => renderer.render({ scene: mesh })
+
+    const animate = (currentTime: number) => {
+      if (lastFrameTime !== null) {
+        elapsed += (currentTime - lastFrameTime) / 1000
+      }
+      lastFrameTime = currentTime
+      program.uniforms.u_time.value = elapsed
+
+      renderFrame()
+      rafId = requestAnimationFrame(animate)
+    }
+
+    const sync = () => {
+      const shouldRun =
+        !pausedRef.current &&
+        !visibility.reducedMotion &&
+        visibility.inView &&
+        visibility.pageVisible
+
+      if (shouldRun && !rafId) {
+        lastFrameTime = null
+        rafId = requestAnimationFrame(animate)
+      } else if (!shouldRun && rafId) {
+        cancelAnimationFrame(rafId)
+        rafId = 0
+      }
+    }
+    controlsRef.current = { sync, renderFrame }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      visibility.inView = entry.isIntersecting
+      sync()
+    })
+    observer.observe(canvas)
+
+    const handleVisibilityChange = () => {
+      visibility.pageVisible = !document.hidden
+      sync()
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    const handleReducedMotionChange = () => {
+      visibility.reducedMotion = reducedMotionQuery.matches
+      sync()
+    }
+    reducedMotionQuery.addEventListener('change', handleReducedMotionChange)
+
+    renderFrame()
+    sync()
 
     return () => {
-      cancelAnimationFrame(rafRef.current)
+      cancelAnimationFrame(rafId)
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      reducedMotionQuery.removeEventListener(
+        'change',
+        handleReducedMotionChange
+      )
+      controlsRef.current = null
       window.removeEventListener('resize', handleResize)
 
       const gl = rendererRef.current?.gl
@@ -388,6 +522,11 @@ export function useWebGLRenderer(
   }, [])
 
   useEffect(() => {
+    pausedRef.current = paused
+    controlsRef.current?.sync()
+  }, [paused])
+
+  useEffect(() => {
     const program = programRef.current
     if (!program) return
 
@@ -399,6 +538,9 @@ export function useWebGLRenderer(
     program.uniforms.u_type.value =
       GRADIENT_TYPE_NUMBER[config.type ?? 'animated']
     program.uniforms.u_noise.value = config.noise
+
+    // reflect config changes even while not animating
+    controlsRef.current?.renderFrame()
   }, [config, normalizedColors])
 
   return { canvasRef, rendererRef, programRef, meshRef }

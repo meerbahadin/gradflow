@@ -16,7 +16,7 @@ const cardData = [
     icon: Palette,
     title: 'Fully Customizable',
     subtitle:
-      '7 gradient types with real-time color, speed, scale, and noise controls',
+      '9 gradient types with real-time color, speed, scale, and noise controls',
     iconBg: 'bg-purple-500/10 text-purple-400',
     glowColor: '168, 85, 247',
   },

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import CodeBlock from '@/components/code/code-block'
 import GradFlowDemo from '@/components/grad-flow-demo'
 
-import { Github, Download } from 'lucide-react'
+import { Code, Download } from 'lucide-react'
 import FeatureCards from '@/components/feature-cards'
 
 export default function Home() {
@@ -87,29 +87,33 @@ function App() {
 
 <GradFlow
   config={{
-    color1: '#e2624b',
-    color2: '#ffffff',
-    color3: '#1e229f',
-    speed: 0.4,
-    scale: 1,
-    type: 'stripe',
+    color1: { r: 210, g: 21, b: 112 },
+    color2: { r: 140, g: 63, b: 248 },
+    color3: { r: 86, g: 255, b: 195 },
+    speed: 0.5,
+    scale: 1.2,
+    type: 'aurora',
+    noise: 0.32,
   }}
-/>`}
+/>
+
+// hex strings work too: color1: '#d21570'`}
               />
             </div>
 
             <div className='space-y-3'>
               <h3 className='text-xl font-semibold'>Using Presets</h3>
               <p className='text-sm text-zinc-400'>
-                Choose from 8 built-in gradient presets
+                Choose from 10 built-in gradient presets
               </p>
               <CodeBlock
-                code={`import { GradFlow, PRESETS } from 'gradflow'
+                code={`import { GradFlow } from 'gradflow'
 
-<GradFlow config={PRESETS.cosmic} />
+<GradFlow preset='cosmic' />
 
 // Available presets:
-// cosmic, matrix, electric, inferno, mystic, cyber, neon, plasma`}
+// cosmic, matrix, electric, inferno, mystic,
+// cyber, neon, plasma, dream, borealis`}
               />
             </div>
 
@@ -168,7 +172,7 @@ const [colors, setColors] = useState(generateRandomColors())
                     <code className='text-xs'>string | RGB</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
-                    <code className='text-xs'>{'{r:226,g:98,b:75}'}</code>
+                    <code className='text-xs'>{'{r:210,g:21,b:112}'}</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
                     First gradient color (hex or RGB)
@@ -182,7 +186,7 @@ const [colors, setColors] = useState(generateRandomColors())
                     <code className='text-xs'>string | RGB</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
-                    <code className='text-xs'>{'{r:255,g:255,b:255}'}</code>
+                    <code className='text-xs'>{'{r:140,g:63,b:248}'}</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
                     Second gradient color (hex or RGB)
@@ -196,7 +200,7 @@ const [colors, setColors] = useState(generateRandomColors())
                     <code className='text-xs'>string | RGB</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
-                    <code className='text-xs'>{'{r:30,g:34,b:159}'}</code>
+                    <code className='text-xs'>{'{r:86,g:255,b:195}'}</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
                     Third gradient color (hex or RGB)
@@ -210,7 +214,7 @@ const [colors, setColors] = useState(generateRandomColors())
                     <code className='text-xs'>number</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
-                    <code className='text-xs'>0.4</code>
+                    <code className='text-xs'>0.5</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
                     Animation speed (0.1 - 3.0)
@@ -224,7 +228,7 @@ const [colors, setColors] = useState(generateRandomColors())
                     <code className='text-xs'>number</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
-                    <code className='text-xs'>1</code>
+                    <code className='text-xs'>1.2</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
                     Pattern scale (0.5 - 3.0)
@@ -238,7 +242,7 @@ const [colors, setColors] = useState(generateRandomColors())
                     <code className='text-xs'>string</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
-                    <code className='text-xs'>&apos;stripe&apos;</code>
+                    <code className='text-xs'>&apos;aurora&apos;</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
                     Gradient pattern type
@@ -251,6 +255,8 @@ const [colors, setColors] = useState(generateRandomColors())
                         'silk',
                         'smoke',
                         'stripe',
+                        'mesh',
+                        'aurora',
                       ].map((t) => (
                         <span
                           key={t}
@@ -270,7 +276,7 @@ const [colors, setColors] = useState(generateRandomColors())
                     <code className='text-xs'>number</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
-                    <code className='text-xs'>0.08</code>
+                    <code className='text-xs'>0.32</code>
                   </td>
                   <td className='p-4 text-zinc-400'>
                     Noise intensity (0 - 0.5)
@@ -299,7 +305,7 @@ const [colors, setColors] = useState(generateRandomColors())
               size='sm'
               className='cursor-pointer gap-2'
             >
-              <Github className='w-4 h-4' />
+              <Code className='w-4 h-4' />
               View on GitHub
             </Button>
           </Link>

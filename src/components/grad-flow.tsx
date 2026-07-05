@@ -3,16 +3,21 @@
 import React, { useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { GradFlowProps, GradientConfig } from '@/types/gradient'
-import { DEFAULT_CONFIG } from '@/constants/gradients'
+import { DEFAULT_CONFIG, PRESETS } from '@/constants/gradients'
 import { useWebGLRenderer } from '@/hooks/useWebGLRenderer'
 import { normalizeColor } from '@/lib/color-conversion'
 
 export default function GradFlow({
   config: initialConfig,
+  preset,
+  paused = false,
   className = '',
 }: GradFlowProps) {
   const config = useMemo<GradientConfig>(() => {
-    const normalized: GradientConfig = { ...DEFAULT_CONFIG }
+    const normalized: GradientConfig = {
+      ...DEFAULT_CONFIG,
+      ...(preset ? PRESETS[preset] : undefined),
+    }
 
     if (initialConfig) {
       if (initialConfig.color1) normalized.color1 = normalizeColor(initialConfig.color1)
@@ -25,9 +30,9 @@ export default function GradFlow({
     }
 
     return normalized
-  }, [initialConfig])
+  }, [initialConfig, preset])
 
-  const { canvasRef } = useWebGLRenderer(config)
+  const { canvasRef } = useWebGLRenderer(config, { paused })
 
   return (
     <canvas

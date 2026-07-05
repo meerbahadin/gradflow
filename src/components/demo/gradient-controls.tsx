@@ -45,6 +45,8 @@ export function GradientControls({ config, onConfigChange }: GradientControlsPro
             <SelectItem value='silk'>Silk</SelectItem>
             <SelectItem value='smoke'>Smoke</SelectItem>
             <SelectItem value='stripe'>Stripe</SelectItem>
+            <SelectItem value='mesh'>Mesh</SelectItem>
+            <SelectItem value='aurora'>Aurora</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

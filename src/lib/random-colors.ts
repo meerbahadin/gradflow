@@ -16,6 +16,8 @@ const gradientTypes: GradientType[] = [
   'silk',
   'smoke',
   'stripe',
+  'mesh',
+  'aurora',
 ]
 
 export function randomGradientType(): GradientType {
