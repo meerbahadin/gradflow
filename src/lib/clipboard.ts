@@ -10,12 +10,5 @@ export const copyCodeToClipboard = (config: GradientConfig) => {
         type: '${config.type}',
         noise: ${config.noise}
       }}`
-  navigator.clipboard
-    .writeText(codeString)
-    .then(() => {
-      alert('Code copied to clipboard!')
-    })
-    .catch(() => {
-      alert('Failed to copy code. Please try again.')
-    })
+  return navigator.clipboard.writeText(codeString)
 }

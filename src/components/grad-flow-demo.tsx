@@ -10,7 +10,7 @@ import { captureImage } from '@/lib/image-capture'
 import { copyCodeToClipboard } from '@/lib/clipboard'
 import { normalizeColor } from '@/lib/color-conversion'
 import ContentDemo from './content-demo'
-import { Code, ImageDown, Settings } from 'lucide-react'
+import { Check, Code, ImageDown, Settings } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -88,15 +88,24 @@ export default function GradFlowDemo({
     captureImage(canvas, renderer, mesh)
   }, [canvasRef, rendererRef, meshRef])
 
+  const [copied, setCopied] = useState(false)
+
+  const handleCopyCode = useCallback(() => {
+    copyCodeToClipboard(config).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [config])
+
   const actionButtons = (
     <div className='flex gap-2'>
       <Button
         className='flex-1 capitalize cursor-pointer'
-        onClick={() => copyCodeToClipboard(config)}
+        onClick={handleCopyCode}
         size='icon'
       >
-        <Code />
-        copy
+        {copied ? <Check /> : <Code />}
+        {copied ? 'copied' : 'copy'}
       </Button>
       <Button
         variant='outline'
