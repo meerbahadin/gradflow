@@ -4,7 +4,9 @@ Beautiful animated WebGL gradients for React. Create stunning, performant gradie
 
 ## Features
 
-- 🎨 **7 Gradient Types**: Linear, Conic, Animated, Wave, Silk, Smoke, and Stripe
+- 🎨 **9 Gradient Types**: Linear, Conic, Animated, Wave, Silk, Smoke, Stripe, Mesh, and Aurora
+- ♿ **Motion-Aware**: Respects `prefers-reduced-motion` and supports a `paused` prop
+- 🔋 **Battery Friendly**: Automatically stops rendering when offscreen or in a hidden tab
 - 🚀 **High Performance**: WebGL-powered rendering with optimized shaders
 - 🎛️ **Fully Customizable**: Control colors, animation speed, scale, and noise
 - 📱 **Responsive**: Automatically adapts to container size
@@ -47,13 +49,13 @@ function App() {
   return (
     <GradFlow
       config={{
-        color1: { r: 226, g: 98, b: 75 },
-        color2: { r: 255, g: 255, b: 255 },
-        color3: { r: 30, g: 34, b: 159 },
-        speed: 0.4,
-        scale: 1,
-        type: 'stripe',
-        noise: 0.08,
+        color1: { r: 210, g: 21, b: 112 },
+        color2: { r: 140, g: 63, b: 248 },
+        color3: { r: 86, g: 255, b: 195 },
+        speed: 0.5,
+        scale: 1.2,
+        type: 'aurora',
+        noise: 0.32,
       }}
     />
   )
@@ -69,9 +71,9 @@ function App() {
   return (
     <GradFlow
       config={{
-        color1: '#e2624b',
-        color2: '#ffffff',
-        color3: '#1e229f',
+        color1: '#d21570',
+        color2: '#8c3ff8',
+        color3: '#56ffc3',
       }}
     />
   )
@@ -81,23 +83,39 @@ function App() {
 ### Using Presets
 
 ```tsx
-import { GradFlow, PRESETS } from 'gradflow'
+import { GradFlow } from 'gradflow'
 
 function App() {
-  return <GradFlow config={PRESETS.cosmic} />
+  return <GradFlow preset='cosmic' />
 }
 ```
 
-Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`
+Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`, `dream`, `borealis`
+
+Presets can be combined with `config` — config values override the preset:
+
+```tsx
+<GradFlow preset='borealis' config={{ speed: 0.2 }} />
+```
+
+### Pausing the Animation
+
+```tsx
+<GradFlow paused />
+```
+
+Renders a static frame without the animation loop. GradFlow also pauses itself automatically when the canvas is scrolled offscreen, the tab is hidden, or the user has `prefers-reduced-motion` enabled.
 
 ## API Reference
 
 ### GradFlow Component
 
-| Prop        | Type                  | Default          | Description                   |
-| ----------- | --------------------- | ---------------- | ----------------------------- |
-| `config`    | `GradientConfigInput` | `DEFAULT_CONFIG` | Gradient configuration object |
-| `className` | `string`              | `''`             | Additional CSS classes        |
+| Prop        | Type                  | Default          | Description                             |
+| ----------- | --------------------- | ---------------- | --------------------------------------- |
+| `config`    | `GradientConfigInput` | `DEFAULT_CONFIG` | Gradient configuration object           |
+| `preset`    | `string`              | —                | Built-in preset name (e.g. `'cosmic'`)  |
+| `paused`    | `boolean`             | `false`          | Freeze the animation on a static frame  |
+| `className` | `string`              | `''`             | Additional CSS classes                  |
 
 ### GradientConfigInput
 
@@ -129,7 +147,9 @@ type RGB = {
 - `wave` - Wave-based undulating patterns
 - `silk` - Smooth silk-like flowing textures
 - `smoke` - Organic smoke-like patterns
-- `stripe` - Warped stripe patterns (default)
+- `stripe` - Warped stripe patterns
+- `mesh` - Soft drifting color blobs (mesh gradient)
+- `aurora` - Northern-lights curtains (default)
 
 ## Utility Functions
 

@@ -1,10 +1,10 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
 import { GradFlowProps, GradientConfig } from '@/types/gradient'
-import { DEFAULT_CONFIG, PRESETS } from '@/constants/gradients'
+import { ALT_DEMO_CONFIG, DEFAULT_CONFIG, PRESETS } from '@/constants/gradients'
 import { useWebGLRenderer } from '@/hooks/useWebGLRenderer'
 import { captureImage } from '@/lib/image-capture'
 import { copyCodeToClipboard } from '@/lib/clipboard'
@@ -13,34 +13,53 @@ import ContentDemo from './content-demo'
 import { Code, ImageDown, Settings } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import Image from 'next/image'
+import Link from 'next/link'
 import { GradientControls } from './demo/gradient-controls'
 import { PresetButtons } from './demo/preset-buttons'
+
+function applyInitialConfig(
+  base: GradientConfig,
+  initialConfig: GradFlowProps['config']
+): GradientConfig {
+  const normalized: GradientConfig = { ...base }
+
+  if (initialConfig) {
+    if (initialConfig.color1)
+      normalized.color1 = normalizeColor(initialConfig.color1)
+    if (initialConfig.color2)
+      normalized.color2 = normalizeColor(initialConfig.color2)
+    if (initialConfig.color3)
+      normalized.color3 = normalizeColor(initialConfig.color3)
+    if (initialConfig.speed !== undefined)
+      normalized.speed = initialConfig.speed
+    if (initialConfig.scale !== undefined)
+      normalized.scale = initialConfig.scale
+    if (initialConfig.type) normalized.type = initialConfig.type
+    if (initialConfig.noise !== undefined)
+      normalized.noise = initialConfig.noise
+  }
+
+  return normalized
+}
 
 export default function GradFlowDemo({
   config: initialConfig,
   className = '',
 }: GradFlowProps) {
-  const [config, setConfig] = useState<GradientConfig>(() => {
-    const normalized: GradientConfig = { ...DEFAULT_CONFIG }
+  const [config, setConfig] = useState<GradientConfig>(() =>
+    applyInitialConfig(DEFAULT_CONFIG, initialConfig)
+  )
+  const hasCustomConfig = useRef(Boolean(initialConfig))
 
-    if (initialConfig) {
-      if (initialConfig.color1)
-        normalized.color1 = normalizeColor(initialConfig.color1)
-      if (initialConfig.color2)
-        normalized.color2 = normalizeColor(initialConfig.color2)
-      if (initialConfig.color3)
-        normalized.color3 = normalizeColor(initialConfig.color3)
-      if (initialConfig.speed !== undefined)
-        normalized.speed = initialConfig.speed
-      if (initialConfig.scale !== undefined)
-        normalized.scale = initialConfig.scale
-      if (initialConfig.type) normalized.type = initialConfig.type
-      if (initialConfig.noise !== undefined)
-        normalized.noise = initialConfig.noise
+  // pick the demo's alternate hero look after mount only, so the
+  // server-rendered markup and the first client render always match
+  useEffect(() => {
+    if (hasCustomConfig.current) return
+    if (Math.random() < 0.5) {
+      setConfig(applyInitialConfig(ALT_DEMO_CONFIG, initialConfig))
     }
-
-    return normalized
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const { canvasRef, rendererRef, meshRef } = useWebGLRenderer(config)
 
@@ -69,17 +88,72 @@ export default function GradFlowDemo({
     captureImage(canvas, renderer, mesh)
   }, [canvasRef, rendererRef, meshRef])
 
+  const actionButtons = (
+    <div className='flex gap-2'>
+      <Button
+        className='flex-1 capitalize cursor-pointer'
+        onClick={() => copyCodeToClipboard(config)}
+        size='icon'
+      >
+        <Code />
+        copy
+      </Button>
+      <Button
+        variant='outline'
+        className='cursor-pointer'
+        onClick={handleCaptureImage}
+        title='Capture Image'
+      >
+        <ImageDown />
+      </Button>
+    </div>
+  )
+
   return (
     <div className='h-screen w-full flex flex-col items-center justify-between relative py-2 rounded-3xl'>
-      <div className='flex w-full max-w-md z-50 container'>
-        <div className='dark flex justify-between items-center w-full p-3 bg-white/20  outline-1 outline-offset-2 outline-white/25 rounded-lg backdrop-blur-lg'>
-          <Image width={30} height={30} src='/logo.svg' alt='logo' />
-          <div className='relative'>
+      <div className='w-full flex justify-center z-50 pt-2 px-4'>
+        <p className='text-xs md:text-sm text-white/90 bg-black/80 outline-1 outline-offset-2 outline-white/15 backdrop-blur-lg rounded-full px-4 py-1.5 text-center'>
+          ✨ New Mesh and Aurora gradients just landed, along with 🚀 faster rendering performance
+        </p>
+      </div>
+
+      <nav className='flex w-full z-50 container justify-between items-center gap-4 pt-4 text-white'>
+        <div className='flex items-center gap-8'>
+          <Link href='/'>
+            <Image width={30} height={30} src='/logo.svg' alt='logo' />
+          </Link>
+          <div className='hidden md:flex items-center gap-8 text-xs uppercase tracking-widest'>
+            <Link
+              href='/#installation'
+              className='opacity-70 hover:opacity-100 transition-opacity'
+            >
+              Docs
+            </Link>
+          </div>
+        </div>
+
+        <div className='flex items-center gap-8'>
+          <div className='hidden md:flex items-center gap-8 text-xs uppercase tracking-widest'>
+            <Link
+              href='https://github.com/meerbahadin/gradflow'
+              target='_blank'
+              className='opacity-70 hover:opacity-100 transition-opacity'
+            >
+              GitHub
+            </Link>
+          </div>
+
+          {/* mobile: controls stay in a popover */}
+          <div className='relative lg:hidden dark'>
             <Popover>
               <PopoverTrigger asChild>
-                <Button className='capitalize cursor-pointer'>
+                <Button
+                  size='icon'
+                  variant='outline'
+                  className='cursor-pointer bg-transparent border-white/60 text-white'
+                  aria-label='playground controls'
+                >
                   <Settings />
-                  playground
                 </Button>
               </PopoverTrigger>
               <PopoverContent className='space-y-4'>
@@ -88,30 +162,19 @@ export default function GradFlowDemo({
                   onConfigChange={updateConfig}
                 />
                 <PresetButtons onApplyPreset={applyPreset} />
-
-                <div className='flex gap-2'>
-                  <Button
-                    className='flex-1 capitalize cursor-pointer'
-                    onClick={() => copyCodeToClipboard(config)}
-                    size='icon'
-                  >
-                    <Code />
-                    copy
-                  </Button>
-                  <Button
-                    variant='outline'
-                    className='cursor-pointer'
-                    onClick={handleCaptureImage}
-                    title='Capture Image'
-                  >
-                    <ImageDown />
-                  </Button>
-                </div>
+                {actionButtons}
               </PopoverContent>
             </Popover>
           </div>
         </div>
-      </div>
+      </nav>
+
+      {/* desktop: controls in a fixed panel on the right for more space */}
+      <aside className='dark hidden lg:block absolute right-4 top-1/2 -translate-y-1/2 z-50 w-80 max-h-[92vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden space-y-4 p-4 bg-black/80 text-white outline-1 outline-offset-2 outline-white/15 rounded-xl backdrop-blur-lg'>
+        <GradientControls config={config} onConfigChange={updateConfig} />
+        <PresetButtons onApplyPreset={applyPreset} />
+        {actionButtons}
+      </aside>
 
       <ContentDemo />
 

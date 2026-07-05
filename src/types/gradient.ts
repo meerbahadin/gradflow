@@ -12,6 +12,8 @@ export type GradientType =
   | 'silk'
   | 'smoke'
   | 'stripe'
+  | 'mesh'
+  | 'aurora'
 
 export type GradientConfig = {
   color1: RGB
@@ -35,6 +37,18 @@ export type GradientConfigInput = {
 
 export type GradFlowProps = {
   config?: GradientConfigInput
-  preset?: 'cosmic' | 'matrix' | 'electric' | 'inferno' | 'mystic' | 'cyber' | 'neon' | 'plasma'
+  preset?:
+    | 'cosmic'
+    | 'matrix'
+    | 'electric'
+    | 'inferno'
+    | 'mystic'
+    | 'cyber'
+    | 'neon'
+    | 'plasma'
+    | 'dream'
+    | 'borealis'
+  /** Freeze the animation. A single static frame is still rendered. */
+  paused?: boolean
   className?: string
 }

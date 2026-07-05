@@ -5,7 +5,7 @@ type RGB = {
     g: number;
     b: number;
 };
-type GradientType = 'linear' | 'animated' | 'conic' | 'wave' | 'silk' | 'smoke' | 'stripe';
+type GradientType = 'linear' | 'animated' | 'conic' | 'wave' | 'silk' | 'smoke' | 'stripe' | 'mesh' | 'aurora';
 type GradientConfig = {
     color1: RGB;
     color2: RGB;
@@ -26,11 +26,13 @@ type GradientConfigInput = {
 };
 type GradFlowProps = {
     config?: GradientConfigInput;
-    preset?: 'cosmic' | 'matrix' | 'electric' | 'inferno' | 'mystic' | 'cyber' | 'neon' | 'plasma';
+    preset?: 'cosmic' | 'matrix' | 'electric' | 'inferno' | 'mystic' | 'cyber' | 'neon' | 'plasma' | 'dream' | 'borealis';
+    /** Freeze the animation. A single static frame is still rendered. */
+    paused?: boolean;
     className?: string;
 };
 
-declare function GradFlow({ config: initialConfig, className, }: GradFlowProps): React.JSX.Element;
+declare function GradFlow({ config: initialConfig, preset, paused, className, }: GradFlowProps): React.JSX.Element;
 
 declare const DEFAULT_CONFIG: GradientConfig;
 declare const GRADIENT_TYPE_NUMBER: Record<GradientType, number>;
@@ -202,6 +204,48 @@ declare const PRESETS: {
         readonly scale: 1.2;
         readonly type: GradientType;
         readonly noise: 0.18;
+    };
+    readonly dream: {
+        readonly color1: {
+            readonly r: 255;
+            readonly g: 153;
+            readonly b: 204;
+        };
+        readonly color2: {
+            readonly r: 120;
+            readonly g: 170;
+            readonly b: 255;
+        };
+        readonly color3: {
+            readonly r: 196;
+            readonly g: 160;
+            readonly b: 255;
+        };
+        readonly speed: 0.5;
+        readonly scale: 1;
+        readonly type: GradientType;
+        readonly noise: 0.06;
+    };
+    readonly borealis: {
+        readonly color1: {
+            readonly r: 64;
+            readonly g: 224;
+            readonly b: 160;
+        };
+        readonly color2: {
+            readonly r: 4;
+            readonly g: 8;
+            readonly b: 28;
+        };
+        readonly color3: {
+            readonly r: 120;
+            readonly g: 80;
+            readonly b: 255;
+        };
+        readonly speed: 0.5;
+        readonly scale: 1.2;
+        readonly type: GradientType;
+        readonly noise: 0.1;
     };
 };
 
