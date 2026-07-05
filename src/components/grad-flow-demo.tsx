@@ -120,16 +120,16 @@ export default function GradFlowDemo({
 
   return (
     <div className='h-screen w-full flex flex-col items-center justify-between relative py-2 rounded-3xl'>
-      <div className='w-full flex justify-center z-50 pt-2 px-4'>
-        <p className='text-xs md:text-sm text-white/90 bg-black/80 outline-1 outline-offset-2 outline-white/15 backdrop-blur-lg rounded-full px-4 py-1.5 text-center'>
-          ✨ New Mesh and Aurora gradients just landed, along with 🚀 faster rendering performance
-        </p>
-      </div>
-
       <nav className='flex w-full z-50 container justify-between items-center gap-4 pt-4 text-white'>
         <div className='flex items-center gap-8'>
           <Link href='/'>
-            <Image width={30} height={30} src='/logo.svg' alt='logo' />
+            <Image
+              width={30}
+              height={30}
+              src='/logo.svg'
+              alt='logo'
+              className='w-[30px] h-[30px]'
+            />
           </Link>
           <div className='hidden md:flex items-center gap-8 text-xs uppercase tracking-widest'>
             <Link

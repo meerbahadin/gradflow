@@ -51,10 +51,10 @@ export default function FeatureCards() {
   return (
     <section className='py-16 space-y-8 container max-w-5xl mx-auto px-4'>
       <div className='text-center space-y-3'>
-        <h2 className='text-3xl md:text-4xl text-balance font-bold bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent'>
+        <h2 className='text-3xl md:text-4xl text-balance font-bold bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50 bg-clip-text text-transparent'>
           WebGL-Powered Gradient Backgrounds
         </h2>
-        <p className='text-zinc-400 text-base md:text-lg'>
+        <p className='text-muted-foreground text-base md:text-lg'>
           High-performance, fully customizable animated gradients for modern web
           applications
         </p>
@@ -67,22 +67,22 @@ export default function FeatureCards() {
         {cardData.map((card, index) => (
           <div
             key={index}
-            className='card bg-white/10 rounded-xl cursor-pointer flex min-h-60 flex-col relative'
+            className='card bg-foreground/10 rounded-xl cursor-pointer flex min-h-60 flex-col relative'
             style={{
               ['--glow-color' as string]: card.glowColor,
             }}
           >
-            <div className='card-content bg-[rgb(23,23,23)] rounded-xl flex flex-col flex-grow absolute inset-[1px] p-6 z-[2]'>
+            <div className='card-content bg-card rounded-xl flex flex-col flex-grow absolute inset-[1px] p-6 z-[2]'>
               <div
                 className={`flex items-center justify-center w-12 h-12 rounded-lg ${card.iconBg} mb-4`}
               >
                 <card.icon size={24} />
               </div>
               <div className='flex flex-col gap-3 flex-grow'>
-                <h3 className='text-xl text-white font-semibold'>
+                <h3 className='text-xl text-card-foreground font-semibold'>
                   {card.title}
                 </h3>
-                <p className='text-white/60 text-sm leading-relaxed'>
+                <p className='text-card-foreground/60 text-sm leading-relaxed'>
                   {card.subtitle}
                 </p>
               </div>

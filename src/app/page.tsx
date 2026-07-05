@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import CodeBlock from '@/components/code/code-block'
 import GradFlowDemo from '@/components/grad-flow-demo'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 import { Code, Download } from 'lucide-react'
 import FeatureCards from '@/components/feature-cards'
@@ -12,6 +13,10 @@ export default function Home() {
   return (
     <main className='relative'>
       <GradFlowDemo />
+
+      <div className='container max-w-5xl flex justify-end pt-8'>
+        <ThemeToggle />
+      </div>
 
       <FeatureCards />
 
@@ -28,7 +33,7 @@ export default function Home() {
               </div>
               <h2 className='text-3xl font-bold'>Installation</h2>
             </div>
-            <p className='text-zinc-400 text-base leading-relaxed'>
+            <p className='text-muted-foreground text-base leading-relaxed'>
               Get started in seconds. Install the package via npm.
             </p>
           </div>
@@ -36,7 +41,7 @@ export default function Home() {
           <div className='space-y-6'>
             <div className='space-y-3'>
               <div className='flex items-center gap-3'>
-                <span className='text-sm font-mono text-zinc-500'>01</span>
+                <span className='text-sm font-mono text-muted-foreground/70'>01</span>
                 <h3 className='text-xl font-semibold'>Install Package</h3>
               </div>
               <CodeBlock code={`npm install gradflow`} lang='bash' />
@@ -44,10 +49,10 @@ export default function Home() {
 
             <div className='space-y-3'>
               <div className='flex items-center gap-3'>
-                <span className='text-sm font-mono text-zinc-500'>02</span>
+                <span className='text-sm font-mono text-muted-foreground/70'>02</span>
                 <h3 className='text-xl font-semibold'>Import & Use</h3>
               </div>
-              <p className='text-sm text-zinc-400'>
+              <p className='text-sm text-muted-foreground'>
                 Import the component and start using it right away
               </p>
               <CodeBlock
@@ -70,7 +75,7 @@ function App() {
         <div className='space-y-8'>
           <div className='space-y-3'>
             <h2 className='text-3xl font-bold'>Usage Examples</h2>
-            <p className='text-zinc-400 text-base leading-relaxed'>
+            <p className='text-muted-foreground text-base leading-relaxed'>
               Customize colors, animation speed, scale, and noise settings to
               create unique gradient backgrounds.
             </p>
@@ -79,7 +84,7 @@ function App() {
           <div className='space-y-6'>
             <div className='space-y-3'>
               <h3 className='text-xl font-semibold'>With Custom Colors</h3>
-              <p className='text-sm text-zinc-400'>
+              <p className='text-sm text-muted-foreground'>
                 Use RGB objects or hex strings
               </p>
               <CodeBlock
@@ -103,7 +108,7 @@ function App() {
 
             <div className='space-y-3'>
               <h3 className='text-xl font-semibold'>Using Presets</h3>
-              <p className='text-sm text-zinc-400'>
+              <p className='text-sm text-muted-foreground'>
                 Choose from 10 built-in gradient presets
               </p>
               <CodeBlock
@@ -119,7 +124,7 @@ function App() {
 
             <div className='space-y-3'>
               <h3 className='text-xl font-semibold'>Random Gradients</h3>
-              <p className='text-sm text-zinc-400'>
+              <p className='text-sm text-muted-foreground'>
                 Generate random colors for unique gradients
               </p>
               <CodeBlock
@@ -140,111 +145,111 @@ const [colors, setColors] = useState(generateRandomColors())
         <div className='space-y-6'>
           <div className='space-y-3'>
             <h2 className='text-3xl font-bold'>Configuration</h2>
-            <p className='text-zinc-400 text-base leading-relaxed'>
+            <p className='text-muted-foreground text-base leading-relaxed'>
               All available configuration options for the GradFlow component
             </p>
           </div>
 
-          <div className='rounded-xl border border-zinc-800 overflow-hidden'>
+          <div className='rounded-xl border border-border overflow-hidden'>
             <table className='w-full text-sm'>
-              <thead className='bg-zinc-900/50'>
-                <tr className='border-b border-zinc-800'>
-                  <th className='text-left p-4 font-semibold text-zinc-200'>
+              <thead className='bg-muted/50'>
+                <tr className='border-b border-border'>
+                  <th className='text-left p-4 font-semibold text-foreground'>
                     Property
                   </th>
-                  <th className='text-left p-4 font-semibold text-zinc-200'>
+                  <th className='text-left p-4 font-semibold text-foreground'>
                     Type
                   </th>
-                  <th className='text-left p-4 font-semibold text-zinc-200'>
+                  <th className='text-left p-4 font-semibold text-foreground'>
                     Default
                   </th>
-                  <th className='text-left p-4 font-semibold text-zinc-200'>
+                  <th className='text-left p-4 font-semibold text-foreground'>
                     Description
                   </th>
                 </tr>
               </thead>
-              <tbody className='divide-y divide-zinc-800'>
-                <tr className='hover:bg-zinc-900/30 transition-colors'>
+              <tbody className='divide-y divide-border'>
+                <tr className='hover:bg-muted/30 transition-colors'>
                   <td className='p-4'>
                     <code className='text-blue-400 font-mono'>color1</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>string | RGB</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>{'{r:210,g:21,b:112}'}</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     First gradient color (hex or RGB)
                   </td>
                 </tr>
-                <tr className='hover:bg-zinc-900/30 transition-colors'>
+                <tr className='hover:bg-muted/30 transition-colors'>
                   <td className='p-4'>
                     <code className='text-blue-400 font-mono'>color2</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>string | RGB</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>{'{r:140,g:63,b:248}'}</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     Second gradient color (hex or RGB)
                   </td>
                 </tr>
-                <tr className='hover:bg-zinc-900/30 transition-colors'>
+                <tr className='hover:bg-muted/30 transition-colors'>
                   <td className='p-4'>
                     <code className='text-blue-400 font-mono'>color3</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>string | RGB</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>{'{r:86,g:255,b:195}'}</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     Third gradient color (hex or RGB)
                   </td>
                 </tr>
-                <tr className='hover:bg-zinc-900/30 transition-colors'>
+                <tr className='hover:bg-muted/30 transition-colors'>
                   <td className='p-4'>
                     <code className='text-blue-400 font-mono'>speed</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>number</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>0.5</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     Animation speed (0.1 - 3.0)
                   </td>
                 </tr>
-                <tr className='hover:bg-zinc-900/30 transition-colors'>
+                <tr className='hover:bg-muted/30 transition-colors'>
                   <td className='p-4'>
                     <code className='text-blue-400 font-mono'>scale</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>number</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>1.2</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     Pattern scale (0.5 - 3.0)
                   </td>
                 </tr>
-                <tr className='hover:bg-zinc-900/30 transition-colors'>
+                <tr className='hover:bg-muted/30 transition-colors'>
                   <td className='p-4'>
                     <code className='text-blue-400 font-mono'>type</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>string</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>&apos;aurora&apos;</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     Gradient pattern type
                     <div className='flex flex-wrap gap-1.5 mt-2'>
                       {[
@@ -260,7 +265,7 @@ const [colors, setColors] = useState(generateRandomColors())
                       ].map((t) => (
                         <span
                           key={t}
-                          className='inline-flex items-center px-2 py-0.5 rounded text-xs bg-zinc-800/50 text-zinc-300 border border-zinc-700/50'
+                          className='inline-flex items-center px-2 py-0.5 rounded text-xs bg-muted text-foreground/80 border border-border'
                         >
                           {t}
                         </span>
@@ -268,17 +273,17 @@ const [colors, setColors] = useState(generateRandomColors())
                     </div>
                   </td>
                 </tr>
-                <tr className='hover:bg-zinc-900/30 transition-colors'>
+                <tr className='hover:bg-muted/30 transition-colors'>
                   <td className='p-4'>
                     <code className='text-blue-400 font-mono'>noise</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>number</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     <code className='text-xs'>0.32</code>
                   </td>
-                  <td className='p-4 text-zinc-400'>
+                  <td className='p-4 text-muted-foreground'>
                     Noise intensity (0 - 0.5)
                   </td>
                 </tr>
@@ -288,14 +293,14 @@ const [colors, setColors] = useState(generateRandomColors())
         </div>
 
         {/* Footer */}
-        <div className='flex w-full items-center justify-between gap-2 pt-8 border-t border-zinc-800'>
+        <div className='flex w-full items-center justify-between gap-2 pt-8 border-t border-border'>
           <Link href='https://www.meera.dev/' target='_blank'>
             <Image
               src='https://www.meera.dev/logo.svg'
               width={32}
               height={32}
               alt='Meera Dev Logo'
-              className='w-8 h-8 opacity-70 hover:opacity-100 transition-opacity'
+              className='w-8 h-8 opacity-70 hover:opacity-100 transition-opacity invert dark:invert-0'
             />
           </Link>
 
