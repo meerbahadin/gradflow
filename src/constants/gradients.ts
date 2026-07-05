@@ -15,7 +15,7 @@ export const ALT_DEMO_CONFIG: GradientConfig = {
   color1: { r: 14, g: 82, b: 255 },
   color2: { r: 130, g: 220, b: 255 },
   color3: { r: 255, g: 255, b: 255 },
-  speed: 0.9,
+  speed: 0.5,
   scale: 2,
   type: 'animated',
   noise: 0.16,
