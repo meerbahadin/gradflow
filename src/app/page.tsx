@@ -6,8 +6,9 @@ import CodeBlock from '@/components/code/code-block'
 import GradFlowDemo from '@/components/grad-flow-demo'
 import { ThemeToggle } from '@/components/theme-toggle'
 
-import { Code, Download } from 'lucide-react'
+import { Code, Download, TrendingUp } from 'lucide-react'
 import FeatureCards from '@/components/feature-cards'
+import GradFlow from '@/components/grad-flow'
 
 export default function Home() {
   return (
@@ -20,18 +21,50 @@ export default function Home() {
 
       <FeatureCards />
 
+      {/* Live Demo Section */}
+      <section className='container max-w-4xl py-24 space-y-10'>
+        <div className='space-y-4 text-center'>
+          <span className='block text-xs font-semibold uppercase tracking-[0.2em] text-primary/80'>
+            Live Example
+          </span>
+          <h2 className='text-4xl md:text-5xl font-bold tracking-tight text-balance bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent'>
+            See It In Action
+          </h2>
+          <p className='text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mx-auto'>
+            Explore a real interface built with GradFlow as an animated
+            background, complete with theme switching and gradient
+            customization.
+          </p>
+        </div>
+
+        <Link href='/demo' className='block group'>
+          <Image
+            src='/demo.png'
+            width={1280}
+            height={896}
+            alt='GradFlow AI chat demo preview'
+            className='w-full h-auto rounded-3xl  border-border  transition-transform duration-300 group-hover:scale-[1.01]'
+          />
+        </Link>
+      </section>
+
       {/* Installation Section */}
       <section
         id='installation'
-        className='container max-w-4xl py-16 space-y-16'
+        className='container max-w-4xl py-24 space-y-20'
       >
         <div className='space-y-8'>
           <div className='space-y-3'>
+            <span className='block text-xs font-semibold uppercase tracking-[0.2em] text-primary/80'>
+              Get Started
+            </span>
             <div className='flex items-center gap-3'>
-              <div className='w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center'>
-                <Download className='w-4 h-4 text-blue-400' />
+              <div className='w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center'>
+                <Download className='w-4.5 h-4.5 text-blue-400' />
               </div>
-              <h2 className='text-3xl font-bold'>Installation</h2>
+              <h2 className='text-4xl font-bold tracking-tight'>
+                Installation
+              </h2>
             </div>
             <p className='text-muted-foreground text-base leading-relaxed'>
               Get started in seconds. Install the package via npm.
@@ -41,20 +74,30 @@ export default function Home() {
           <div className='space-y-6'>
             <div className='space-y-3'>
               <div className='flex items-center gap-3'>
-                <span className='text-sm font-mono text-muted-foreground/70'>01</span>
-                <h3 className='text-xl font-semibold'>Install Package</h3>
+                <span className='flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-mono font-semibold text-primary'>
+                  01
+                </span>
+                <h3 className='text-xl font-semibold tracking-tight'>
+                  Install Package
+                </h3>
               </div>
               <CodeBlock code={`npm install gradflow`} lang='bash' />
             </div>
 
             <div className='space-y-3'>
-              <div className='flex items-center gap-3'>
-                <span className='text-sm font-mono text-muted-foreground/70'>02</span>
-                <h3 className='text-xl font-semibold'>Import & Use</h3>
+              <div className='space-y-1'>
+                <div className='flex items-center gap-3'>
+                  <span className='flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-mono font-semibold text-primary'>
+                    02
+                  </span>
+                  <h3 className='text-xl font-semibold tracking-tight'>
+                    Import &amp; Use
+                  </h3>
+                </div>
+                <p className='text-sm text-muted-foreground pl-9'>
+                  Import the component and start using it right away
+                </p>
               </div>
-              <p className='text-sm text-muted-foreground'>
-                Import the component and start using it right away
-              </p>
               <CodeBlock
                 code={`import { GradFlow } from 'gradflow'
 
@@ -74,7 +117,12 @@ function App() {
         {/* Usage Examples */}
         <div className='space-y-8'>
           <div className='space-y-3'>
-            <h2 className='text-3xl font-bold'>Usage Examples</h2>
+            <span className='block text-xs font-semibold uppercase tracking-[0.2em] text-primary/80'>
+              Recipes
+            </span>
+            <h2 className='text-4xl font-bold tracking-tight'>
+              Usage Examples
+            </h2>
             <p className='text-muted-foreground text-base leading-relaxed'>
               Customize colors, animation speed, scale, and noise settings to
               create unique gradient backgrounds.
@@ -83,10 +131,14 @@ function App() {
 
           <div className='space-y-6'>
             <div className='space-y-3'>
-              <h3 className='text-xl font-semibold'>With Custom Colors</h3>
-              <p className='text-sm text-muted-foreground'>
-                Use RGB objects or hex strings
-              </p>
+              <div className='space-y-1'>
+                <h3 className='text-xl font-semibold tracking-tight'>
+                  With Custom Colors
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  Use RGB objects or hex strings
+                </p>
+              </div>
               <CodeBlock
                 code={`import { GradFlow } from 'gradflow'
 
@@ -107,10 +159,14 @@ function App() {
             </div>
 
             <div className='space-y-3'>
-              <h3 className='text-xl font-semibold'>Using Presets</h3>
-              <p className='text-sm text-muted-foreground'>
-                Choose from 10 built-in gradient presets
-              </p>
+              <div className='space-y-1'>
+                <h3 className='text-xl font-semibold tracking-tight'>
+                  Using Presets
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  Choose from 10 built-in gradient presets
+                </p>
+              </div>
               <CodeBlock
                 code={`import { GradFlow } from 'gradflow'
 
@@ -123,10 +179,14 @@ function App() {
             </div>
 
             <div className='space-y-3'>
-              <h3 className='text-xl font-semibold'>Random Gradients</h3>
-              <p className='text-sm text-muted-foreground'>
-                Generate random colors for unique gradients
-              </p>
+              <div className='space-y-1'>
+                <h3 className='text-xl font-semibold tracking-tight'>
+                  Random Gradients
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  Generate random colors for unique gradients
+                </p>
+              </div>
               <CodeBlock
                 code={`import { GradFlow, generateRandomColors } from 'gradflow'
 
@@ -144,26 +204,29 @@ const [colors, setColors] = useState(generateRandomColors())
         {/* API Configuration */}
         <div className='space-y-6'>
           <div className='space-y-3'>
-            <h2 className='text-3xl font-bold'>Configuration</h2>
+            <span className='block text-xs font-semibold uppercase tracking-[0.2em] text-primary/80'>
+              API Reference
+            </span>
+            <h2 className='text-4xl font-bold tracking-tight'>Configuration</h2>
             <p className='text-muted-foreground text-base leading-relaxed'>
               All available configuration options for the GradFlow component
             </p>
           </div>
 
-          <div className='rounded-xl border border-border overflow-hidden'>
+          <div className='rounded-xl border border-border overflow-hidden shadow-sm'>
             <table className='w-full text-sm'>
-              <thead className='bg-muted/50'>
+              <thead className='bg-muted/60'>
                 <tr className='border-b border-border'>
-                  <th className='text-left p-4 font-semibold text-foreground'>
+                  <th className='text-left p-4 font-semibold text-foreground text-xs uppercase tracking-wide'>
                     Property
                   </th>
-                  <th className='text-left p-4 font-semibold text-foreground'>
+                  <th className='text-left p-4 font-semibold text-foreground text-xs uppercase tracking-wide'>
                     Type
                   </th>
-                  <th className='text-left p-4 font-semibold text-foreground'>
+                  <th className='text-left p-4 font-semibold text-foreground text-xs uppercase tracking-wide'>
                     Default
                   </th>
-                  <th className='text-left p-4 font-semibold text-foreground'>
+                  <th className='text-left p-4 font-semibold text-foreground text-xs uppercase tracking-wide'>
                     Description
                   </th>
                 </tr>
@@ -291,6 +354,44 @@ const [colors, setColors] = useState(generateRandomColors())
             </table>
           </div>
         </div>
+
+        {/* Download Stat */}
+        <Link
+          href='https://www.npmjs.com/package/gradflow'
+          target='_blank'
+          className='group relative block overflow-hidden rounded-3xl px-8 py-12 text-center'
+        >
+          <div className='pointer-events-none absolute inset-0 -z-10'>
+            <GradFlow
+              config={{
+                color1: { r: 14, g: 82, b: 255 },
+                color2: { r: 130, g: 220, b: 255 },
+                color3: { r: 255, g: 255, b: 255 },
+                speed: 0.4,
+                scale: 0.5,
+                type: 'silk',
+                noise: 0,
+              }}
+            />
+            <div className='absolute inset-0' />
+          </div>
+
+          <div className='relative flex flex-col items-center gap-3'>
+            <span className='flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-xl'>
+              <TrendingUp className='h-5 w-5' />
+            </span>
+            <p className='text-5xl md:text-6xl font-bold tracking-tight text-white drop-shadow-sm'>
+              2.5k+
+            </p>
+            <p className='text-sm font-medium uppercase tracking-[0.2em] text-white'>
+              Weekly Downloads on npm
+            </p>
+            <span className='mt-1 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-white backdrop-blur-xl transition-colors group-hover:bg-white/20 group-hover:text-white'>
+              <Download className='h-3 w-3' />
+              npm install gradflow
+            </span>
+          </div>
+        </Link>
 
         {/* Footer */}
         <div className='flex w-full items-center justify-between gap-2 pt-8 border-t border-border'>

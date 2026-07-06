@@ -50,8 +50,11 @@ export default function FeatureCards() {
 
   return (
     <section className='py-16 space-y-8 container max-w-5xl mx-auto px-4'>
-      <div className='text-center space-y-3'>
-        <h2 className='text-3xl md:text-4xl text-balance font-bold bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50 bg-clip-text text-transparent'>
+      <div className='text-center space-y-4'>
+        <span className='block text-xs font-semibold uppercase tracking-[0.2em] text-primary/80'>
+          Why GradFlow
+        </span>
+        <h2 className='text-3xl md:text-5xl text-balance font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50 bg-clip-text text-transparent'>
           WebGL-Powered Gradient Backgrounds
         </h2>
         <p className='text-muted-foreground text-base md:text-lg'>
