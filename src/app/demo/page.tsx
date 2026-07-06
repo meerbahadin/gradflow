@@ -5,7 +5,7 @@ import { AiChat } from './ai-chat'
 
 export default function DemoPage() {
   return (
-    <main className='w-full'>
+    <main className='w-full bg-white'>
       <div className='h-screen w-full'>
         <AiChat />
       </div>
