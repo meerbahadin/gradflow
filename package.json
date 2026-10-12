@@ -1,6 +1,6 @@
 {
   "name": "gradflow",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Animated WebGL gradients for React. 20 shaders, zero dependencies.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
