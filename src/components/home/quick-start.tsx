@@ -32,9 +32,9 @@ export default function Hero() {
 const CUSTOM = `<GradFlow
   config={{
     type: 'prism',
-    color1: '#ff3c78',
-    color2: '#3c6eff',
-    color3: '#5affc8',
+    color1: '#ff5a1e',
+    color2: '#285aff',
+    color3: '#78d2ff',
     speed: 0.5,
     scale: 1,
     noise: 0.1,

@@ -12,7 +12,7 @@ export default function Waitlist() {
   return (
     <div className='on-gradient relative isolate overflow-hidden bg-black px-7 py-14 sm:px-12 sm:py-20'>
       <div className='pointer-events-none absolute inset-0 -z-10'>
-        <GradFlow preset='spectrum' interactive />
+        <GradFlow preset='andromeda' interactive />
         <div className='absolute inset-0 bg-black/25' />
       </div>
 

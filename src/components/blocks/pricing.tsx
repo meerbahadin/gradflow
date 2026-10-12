@@ -26,17 +26,7 @@ export default function Pricing() {
   return (
     <div className='on-gradient relative isolate flex h-full min-h-[560px] flex-col justify-between gap-10 overflow-hidden bg-black p-7'>
       <div className='pointer-events-none absolute inset-0 -z-10'>
-        <GradFlow
-          config={{
-            type: 'aurora',
-            color1: '#d21570',
-            color2: '#8c3ff8',
-            color3: '#56ffc3',
-            speed: 0.5,
-            scale: 1.2,
-            noise: 0.2,
-          }}
-        />
+        <GradFlow preset='magma' />
         <div className='absolute inset-0 bg-linear-to-t from-black/70 via-black/25 to-transparent' />
       </div>
 

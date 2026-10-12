@@ -23,7 +23,7 @@ export default function Player() {
   return (
     <div className='flex h-full min-h-[360px] flex-col gap-6 bg-surface p-5 sm:flex-row sm:items-center'>
       <div className='relative isolate aspect-square w-full shrink-0 overflow-hidden rounded-(--radius-panel) bg-black sm:w-56'>
-        <GradFlow preset='magma' paused={!playing} />
+        <GradFlow preset='sahara' paused={!playing} />
       </div>
 
       <div className='flex min-w-0 flex-1 flex-col gap-5'>

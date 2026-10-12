@@ -14,17 +14,17 @@ export type GradientType =
   | 'stripe'
   | 'mesh'
   | 'aurora'
-  | 'lava'
+  | 'eclipse'
   | 'caustics'
   | 'nebula'
   | 'rays'
   | 'topo'
   | 'glass'
-  | 'vortex'
+  | 'fold'
   | 'halftone'
   | 'prism'
-  | 'cells'
   | 'dunes'
+  | 'horizon'
 
 export type GradientConfig = {
   color1: RGB
@@ -66,8 +66,8 @@ export type PresetName =
   | 'maelstrom'
   | 'newsprint'
   | 'spectrum'
-  | 'coral'
   | 'sahara'
+  | 'twilight'
   | 'mono'
 
 export type GradFlowProps = {

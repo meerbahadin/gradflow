@@ -4,7 +4,7 @@ Beautiful animated WebGL gradients for React. Create stunning, performant gradie
 
 ## Features
 
-- 🎨 **20 Gradient Types**: from Aurora, Mesh and Silk to Lava, Prism, Caustics, Glass and Nebula
+- 🎨 **20 Gradient Types**: from Aurora, Mesh and Silk to Eclipse, Prism, Caustics, Glass and Nebula
 - 🌊 **Blended Transitions**: changing type, colors or speed morphs the canvas instead of cutting
 - 🖱️ **Pointer Interaction**: an optional lens that swells the pattern under the cursor
 - 📦 **Zero Dependencies**: raw WebGL, about 11 kB gzipped
@@ -93,7 +93,7 @@ function App() {
 }
 ```
 
-Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`, `dream`, `borealis`, `magma`, `lagoon`, `andromeda`, `cathedral`, `atlas`, `reeded`, `maelstrom`, `newsprint`, `spectrum`, `coral`, `sahara`, `mono`
+Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`, `dream`, `borealis`, `magma`, `lagoon`, `andromeda`, `cathedral`, `atlas`, `reeded`, `maelstrom`, `newsprint`, `spectrum`, `sahara`, `twilight`, `mono`
 
 Presets can be combined with `config` — config values override the preset:
 
@@ -187,17 +187,17 @@ type RGB = {
 - `stripe` - Warped stripe patterns
 - `mesh` - Soft drifting color blobs (mesh gradient)
 - `aurora` - Northern-lights curtains (default)
-- `lava` - Metaballs that merge and split
+- `eclipse` - A ring of light around a dark disc
 - `caustics` - Light through moving water
 - `nebula` - Warped dust clouds over a star field
 - `rays` - Shafts of light from above
 - `topo` - An animated contour map
 - `glass` - A soft field behind fluted glass
-- `vortex` - A three-armed logarithmic spiral
+- `fold` - Sheets of light, creased and overlapping
 - `halftone` - A rotated dot screen
 - `prism` - Bands of light split into three colors
-- `cells` - Voronoi cells with drifting sites
 - `dunes` - Layered, drifting ridgelines
+- `horizon` - A soft glow rising from the bottom edge
 
 `GRADIENT_TYPES` exports the full list as an array.
 

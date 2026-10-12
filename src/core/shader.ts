@@ -339,14 +339,6 @@ export const FRAGMENT_SHADER = `
     return f / 0.875;
   }
 
-  // the three colors as one even ramp
-  vec3 ramp3(float t) {
-    t = clamp(t, 0.0, 1.0);
-    return t < 0.5
-      ? mix(u_color1, u_color2, smoothstep(0.0, 1.0, t * 2.0))
-      : mix(u_color2, u_color3, smoothstep(0.0, 1.0, t * 2.0 - 1.0));
-  }
-
   // centered coordinates, y in [-0.5, 0.5], x stretched by the aspect ratio
   vec2 centered(vec2 uv) {
     vec2 p = uv - 0.5;
@@ -356,37 +348,35 @@ export const FRAGMENT_SHADER = `
 
   // @Gradient Types (next)
 
-  // metaballs: summed inverse-square fields, thresholded twice for a soft
-  // body and a hot core
-  vec3 lavaGradient(vec2 uv, float time) {
+  // the sun behind a moon: a dark disc with a crisp bright rim and a long soft
+  // corona outside it. One side burns brighter, and that side drifts around.
+  vec3 eclipseGradient(vec2 uv, float time) {
     vec2 p = centered(uv) * 2.0;
-    float ratio = u_resolution.x / max(u_resolution.y, 1.0);
-    float size = 1.0 / sqrt(max(u_scale, 0.05));
-    float t = time * 0.9;
+    float t = time * 0.6;
 
-    float field = 0.0;
-    for (int i = 0; i < 7; i++) {
-      float fi = float(i);
-      vec2 c = vec2(
-        sin(t * (0.31 + fi * 0.07) + fi * 1.7) * 0.8 * ratio,
-        cos(t * (0.23 + fi * 0.05) + fi * 2.3) * 0.8
-      );
-      float r = (0.3 + 0.08 * sin(fi * 3.1)) * size;
-      // the softened denominator keeps the centre from spiking, so the core
-      // fades in across the blob instead of sitting on it like a disc
-      field += r * r / (dot(p - c, p - c) + r * r * 0.25);
-    }
+    float r = length(p);
+    float a = atan(p.y, p.x);
+    float radius = 0.58 / sqrt(max(u_scale, 0.05));
 
-    // wide, overlapping thresholds: the blobs shade from rim to core instead
-    // of reading as flat discs
-    float body = smoothstep(0.75, 1.7, field);
-    float core = smoothstep(1.5, 4.4, field);
-    float halo = smoothstep(0.25, 0.9, field) * (1.0 - body);
+    // whole multiples of the angle only, so the atan seam never shows
+    float wobble = 0.007 * sin(a * 3.0 + t * 0.7) + 0.004 * sin(a * 5.0 - t * 0.5);
+    float d = r - radius - wobble;
+    float away = max(d, 0.0);
 
-    vec3 color = mix(u_color2, u_color2 * 0.5, clamp(length(p) * 0.45, 0.0, 1.0));
-    color += u_color1 * halo * 0.35;
-    color = mix(color, u_color1, body);
-    color = mix(color, u_color3, core * 0.9);
+    float arc = 0.5 + 0.5 * cos(a - t * 0.35 - 1.2);
+    arc *= arc;
+
+    float outside = smoothstep(-0.05, 0.0, d);
+    float corona = exp(-away * (6.5 - 4.0 * arc)) * outside;
+    float rim = exp(-abs(d) * 46.0);
+    float flare = exp(-away * 2.2) * arc * outside;
+
+    vec3 color = u_color2 * (1.0 - 0.45 * smoothstep(0.0, 1.8, r));
+    // the disc itself, a shade under the sky around it
+    color *= mix(0.4, 1.0, smoothstep(-0.3, 0.02, d));
+
+    color += u_color1 * (corona * (0.5 + 0.5 * arc) + flare * 0.35);
+    color += u_color3 * (rim * (0.35 + 0.65 * arc) + corona * corona * arc * 0.55);
 
     return clamp(color, 0.0, 1.0);
   }
@@ -416,28 +406,58 @@ export const FRAGMENT_SHADER = `
     return clamp(color, 0.0, 1.0);
   }
 
-  // domain-warped clouds over a hashed star field
-  vec3 nebulaGradient(vec2 uv, float time) {
-    vec2 p = centered(uv) * (1.8 * u_scale);
-    float t = time * 0.5;
-
-    vec2 q = vec2(vfbm(p + t * 0.05), vfbm(p + vec2(5.2, 1.3) - t * 0.04));
-    float dust = vfbm(p * 1.3 + 2.5 * q + t * 0.03);
-    float deep = vfbm(p * 0.8 - 1.5 * q + 7.0);
-
-    vec3 color = u_color2 * (0.4 + 0.6 * deep);
-    color = mix(color, u_color1, smoothstep(0.35, 0.8, dust) * 0.9);
-    color = mix(color, u_color3, smoothstep(0.3, 0.62, dust * deep * 1.6) * 0.85);
-
-    vec2 g = centered(uv) * 60.0;
+  // one layer of stars on a grid: a pinpoint with a soft halo, twinkling
+  float starLayer(vec2 p, float cells, float density, float time) {
+    vec2 g = p * cells;
     vec2 id = floor(g);
     vec2 f = fract(g) - 0.5;
     float seed = hash21(id);
-    vec2 offset = (vec2(hash21(id + 7.0), hash21(id + 3.0)) - 0.5) * 0.6;
-    float star = step(0.975, seed) * smoothstep(0.14, 0.0, length(f - offset));
-    star *= 0.55 + 0.45 * sin(time * 2.0 + seed * 40.0);
-    // stars sit behind the bright dust
-    color += star * (1.0 - smoothstep(0.45, 0.85, dust) * 0.8);
+    vec2 offset = (vec2(hash21(id + 7.0), hash21(id + 3.0)) - 0.5) * 0.4;
+    float d = length(f - offset);
+    float size = 0.4 + 0.6 * hash21(id + 11.0);
+    // the halo has to die out before it reaches the edge of its cell
+    float star = size * 0.006 / (d * d + 0.006) * smoothstep(0.3, 0.04, d);
+    star *= 0.65 + 0.35 * sin(time * 2.0 + seed * 40.0);
+    return star * step(1.0 - density, seed);
+  }
+
+  // glowing gas: a twice-warped cloud lit from inside, with thin bright
+  // filaments, dark dust lanes across it, and stars behind
+  vec3 nebulaGradient(vec2 uv, float time) {
+    vec2 c = centered(uv);
+    vec2 p = c * (1.8 * u_scale);
+    float t = time * 0.5;
+
+    vec2 q = vec2(vfbm3(p + t * 0.04), vfbm3(p + vec2(5.2, 1.3) - t * 0.03));
+    vec2 r = vec2(
+      vfbm3(p + 3.0 * q + vec2(1.7, 9.2) + t * 0.02),
+      vfbm3(p + 3.0 * q + vec2(8.3, 2.8) - t * 0.02)
+    );
+
+    float gas = vfbm(p * 0.9 + 2.6 * r);
+    float filament = 1.0 - abs(2.0 * vfbm3(p * 1.4 + 2.2 * r + 3.0) - 1.0);
+    filament = pow(filament, 5.0);
+    float dust = smoothstep(0.45, 0.72, vfbm3(p * 1.1 - 2.0 * q + 4.0));
+
+    // the cloud is a warped band across the frame, not a fill
+    float across = dot(p + (q - 0.5) * 1.4, vec2(0.45, 0.89));
+    float cloud = exp(-across * across * 1.1);
+
+    float glow = smoothstep(0.25, 0.7, gas) * cloud;
+    float core = smoothstep(0.42, 0.74, gas) * cloud;
+
+    // the cores turn to color3 rather than adding it, so it keeps its hue
+    vec3 light = mix(u_color1 * glow * 1.15, u_color3 * 1.15, core * core * 0.85)
+               + u_color3 * filament * glow * 0.4;
+    light *= 1.0 - 0.6 * dust;
+
+    vec3 color = u_color2 * (0.3 + 0.5 * vfbm3(p * 0.7 + 7.0));
+
+    float stars = starLayer(c, 46.0, 0.1, time) + starLayer(c + 3.7, 17.0, 0.05, time * 0.7) * 1.5;
+    color += mix(vec3(1.0), u_color3, 0.3) * stars * (1.0 - 0.85 * glow);
+
+    // roll off instead of clipping, so the bright gas glows
+    color += 1.0 - exp(-light * 1.5);
 
     return clamp(color, 0.0, 1.0);
   }
@@ -523,23 +543,42 @@ export const FRAGMENT_SHADER = `
     return clamp(color, 0.0, 1.0);
   }
 
-  // log spiral with an integer arm count, so the atan seam never shows
-  vec3 vortexGradient(vec2 uv, float time) {
-    vec2 p = centered(uv) * 2.0;
-    float r = length(p);
-    float a = atan(p.y, p.x);
-    float t = time * 0.8;
+  // panes of glass folded over each other. Each pane has one creased edge
+  // that catches the light and thins out to nothing behind it; panes screen
+  // over one another, so overlaps get brighter instead of darker.
+  vec3 foldGradient(vec2 uv, float time) {
+    vec2 q = Rot(0.6) * centered(uv) * 2.0 * u_scale;
+    float t = time * 0.6;
+    float pixel = 2.0 * u_scale / max(u_resolution.y, 1.0);
 
-    float s = a * 3.0 - log(r + 0.04) * (3.0 * u_scale) - t * 1.2;
-    s += (vfbm3(p * 2.0 + t * 0.1) - 0.5) * 1.8;
+    vec3 color = mix(u_color2, u_color2 * 0.45, clamp(length(centered(uv)) * 1.3, 0.0, 1.0));
 
-    float band = 0.5 + 0.5 * sin(s);
-    float fine = 0.5 + 0.5 * sin(s * 2.0 + 1.0 + t * 0.3);
+    for (int i = 0; i < 6; i++) {
+      float fi = float(i);
+      float bend = mod(fi, 2.0) * 2.0 - 1.0;
 
-    vec3 color = ramp3(band);
-    color = mix(color, u_color3, pow(fine, 3.0) * 0.3);
-    color = mix(color, u_color3, exp(-r * 5.0));
-    color *= 1.0 - 0.3 * smoothstep(0.6, 1.7, r);
+      float crease = (fi - 2.5) * 0.4
+                   + 0.26 * sin(q.x * (1.05 + 0.12 * fi) + fi * 1.9 + t * (0.25 + 0.05 * fi))
+                   + 0.1 * bend * q.x * q.x;
+      float s = q.y - crease;
+      float pane = smoothstep(-pixel, pixel, s);
+      float back = max(s, 0.0);
+
+      // thick near the crease, clear further in
+      float body = exp(-back * 1.7);
+      float fresnel = exp(-back * 8.0);
+      // the lit edge, and a fainter line just inside it for the glass's thickness
+      float rim = exp(-back * 80.0);
+      float inner = exp(-pow((back - 0.045) / 0.014, 2.0));
+      float bloom = exp(-abs(s) * 20.0);
+
+      vec3 tint = mix(u_color1, u_color3, clamp(fresnel * 0.6 + 0.08 + 0.14 * sin(fi * 2.1 + q.x * 0.8 + t * 0.2), 0.0, 1.0));
+      vec3 light = tint * pane * (body * 0.42 + fresnel * 0.4)
+                 + u_color3 * (pane * (rim * 0.6 + inner * 0.12) + bloom * 0.1);
+
+      // screen blend
+      color += light * (1.0 - color);
+    }
 
     return clamp(color, 0.0, 1.0);
   }
@@ -608,64 +647,80 @@ export const FRAGMENT_SHADER = `
     return 1.0 - exp(-color * 1.2);
   }
 
-  // voronoi with drifting sites; f2 - f1 gives an even border
-  vec3 cellsGradient(vec2 uv, float time) {
-    vec2 p = centered(uv) * (4.0 * u_scale);
-    vec2 ip = floor(p);
-    vec2 fp = fract(p);
-    float t = time * 0.7;
-
-    float d1 = 8.0;
-    float d2 = 8.0;
-    vec2 nearest = vec2(0.0);
-
-    for (int j = -1; j <= 1; j++) {
-      for (int i = -1; i <= 1; i++) {
-        vec2 g = vec2(float(i), float(j));
-        vec2 o = 0.5 + 0.42 * sin(t + TAU * hash(ip + g));
-        vec2 r = g + o - fp;
-        float d = dot(r, r);
-        if (d < d1) {
-          d2 = d1;
-          d1 = d;
-          nearest = ip + g;
-        } else if (d < d2) {
-          d2 = d;
-        }
-      }
-    }
-
-    d1 = sqrt(d1);
-    d2 = sqrt(d2);
-
-    float seed = hash21(nearest + 0.5);
-    vec3 color = ramp3(0.5 + 0.5 * sin(seed * TAU + t * 0.4));
-    color *= 1.0 - 0.3 * d1;
-    color = mix(color, u_color3, smoothstep(0.09, 0.0, d2 - d1) * 0.75);
-
-    return clamp(color, 0.0, 1.0);
+  // one ridgeline: skewed swells, a long windward slope into a short slip face
+  float duneCrest(float x, float seed) {
+    float a = x * 1.1 + seed;
+    return sin(a + 0.6 * sin(a)) * 0.6
+         + sin(x * 2.3 + seed * 1.7) * 0.25
+         + (vfbm3(vec2(x * 1.2, seed)) - 0.5) * 0.3;
   }
 
-  // stacked ridgelines, far to near, each drifting at its own rate
+  // stacked dunes, far to near, each drifting at its own rate. A ridge's faces
+  // split into sunlit and shadowed sides, and the split shears down the slope
+  // so it reads as an edge running toward the viewer.
   vec3 dunesGradient(vec2 uv, float time) {
     float ratio = u_resolution.x / max(u_resolution.y, 1.0);
     vec2 p = vec2(uv.x * ratio, uv.y);
     float t = time * 0.8;
 
-    vec3 color = mix(u_color3, u_color1, smoothstep(0.25, 1.0, uv.y));
+    // sky: color3 at the horizon rising into color1, with a low sun in the haze
+    vec3 haze = mix(u_color3, u_color1, 0.3);
+    vec3 color = mix(u_color3, u_color1, smoothstep(0.5, 1.05, uv.y));
+    vec2 sun = vec2(ratio * 0.7, 0.74);
+    color = mix(color, u_color3, exp(-length(p - sun) * 3.0) * 0.9);
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       float fi = float(i);
-      float depth = fi / 5.0;
+      float depth = fi / 4.0;
+      float seed = fi * 3.3;
 
-      float x = p.x * (0.8 + depth * 0.9) * u_scale + fi * 13.7 + t * (0.03 + depth * 0.09);
-      float crest = 0.74 - depth * 0.64 + (vfbm3(vec2(x, fi * 3.3)) - 0.5) * (0.24 + 0.1 * depth);
-      float below = smoothstep(crest + 0.003, crest - 0.003, p.y);
+      float x = p.x * (0.95 + depth * 0.75) * u_scale + fi * 13.7 + t * (0.03 + depth * 0.09);
+      float amp = 0.1 + 0.1 * depth;
+      float crest = 0.64 - depth * 0.6 + duneCrest(x, seed) * amp;
+      float d = crest - p.y;
+      float below = smoothstep(-0.003, 0.003, d);
+      float fall = max(d, 0.0);
 
-      vec3 layer = mix(u_color1, u_color2, 0.15 + depth * 0.85);
-      layer = mix(layer, u_color3, smoothstep(0.14, 0.0, crest - p.y) * 0.3 * (1.0 - depth * 0.6));
+      // the sun is to the right: faces falling away to the right catch it
+      float sx = x + fall * (3.0 - depth * 1.4);
+      float slope = duneCrest(sx + 0.04, seed) - duneCrest(sx - 0.04, seed);
+      float lit = smoothstep(0.02, -0.02, slope);
+
+      vec3 sunlit = mix(u_color1, u_color3, 0.12 + 0.3 * exp(-fall * 7.0));
+      // shadows start as a deeper color1 and only reach color2 up close, so the
+      // middle distance never mixes into mud
+      vec3 shadow = mix(u_color1 * 0.5, u_color2, depth * depth);
+      vec3 layer = mix(shadow, sunlit, lit);
+
+      // a bright rim on the crest, and distance fading the far ridges out
+      layer = mix(layer, u_color3, exp(-fall * 60.0) * (0.25 + 0.35 * lit));
+      layer = mix(layer, haze, (1.0 - depth) * 0.45);
       color = mix(color, layer, below);
     }
+
+    return clamp(color, 0.0, 1.0);
+  }
+
+  // a glow on the horizon: two soft-edged hills, a wide one in color1 and a
+  // hot one in color3 beneath it, lit like blurred shapes set to plus-lighter
+  vec3 horizonGradient(vec2 uv, float time) {
+    float x = uv.x - 0.5;
+    float t = time * 0.5;
+    float rise = 0.42 * u_scale;
+
+    float body = rise + 0.15 * sin(x * 2.6 + t * 0.5 + 0.7) + 0.04 * sin(x * 5.3 - t * 0.35);
+    float hot = rise * 0.32 + 0.1 * sin(x * 2.1 - t * 0.4 + 2.2) + 0.03 * sin(x * 4.7 + t * 0.3);
+
+    // the width of each smoothstep is the blur radius
+    float glow = smoothstep(0.34, -0.3, uv.y - body);
+    float core = smoothstep(0.26, -0.2, uv.y - hot);
+    glow *= glow;
+    core *= core;
+
+    vec3 color = mix(u_color2, u_color2 * 0.6, uv.y);
+    color = mix(color, u_color1, glow);
+    color += u_color1 * glow * core * 0.35;
+    color += u_color3 * core;
 
     return clamp(color, 0.0, 1.0);
   }
@@ -680,17 +735,17 @@ export const FRAGMENT_SHADER = `
     if (type == 6) return stripeGradient(uv, time);
     if (type == 7) return meshGradient(uv, time);
     if (type == 8) return auroraGradient(uv, time);
-    if (type == 9) return lavaGradient(uv, time);
+    if (type == 9) return eclipseGradient(uv, time);
     if (type == 10) return causticsGradient(uv, time);
     if (type == 11) return nebulaGradient(uv, time);
     if (type == 12) return raysGradient(uv, time);
     if (type == 13) return topoGradient(uv, time);
     if (type == 14) return glassGradient(uv, time);
-    if (type == 15) return vortexGradient(uv, time);
+    if (type == 15) return foldGradient(uv, time);
     if (type == 16) return halftoneGradient(uv, time);
     if (type == 17) return prismGradient(uv, time);
-    if (type == 18) return cellsGradient(uv, time);
-    if (type == 19) return dunesGradient(uv, time);
+    if (type == 18) return dunesGradient(uv, time);
+    if (type == 19) return horizonGradient(uv, time);
     return animatedGradient(uv, time);
   }
 
