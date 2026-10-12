@@ -42,7 +42,7 @@ export default function SiteFooter() {
             <p>
               MIT licensed. Built by{' '}
               <a
-                href='https://www.meera.dev/'
+                href='https://www.meerbahadin.dev/'
                 target='_blank'
                 rel='noreferrer'
                 className='text-foreground underline-offset-4 hover:underline'
