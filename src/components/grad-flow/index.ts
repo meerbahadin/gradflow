@@ -2,7 +2,7 @@
 export { default as GradFlow } from '../grad-flow'
 
 // Presets and defaults
-export { PRESETS, DEFAULT_CONFIG } from '@/constants/gradients'
+export { PRESETS, DEFAULT_CONFIG, GRADIENT_TYPES } from '@/constants/gradients'
 
 // Types
 export type {
@@ -11,6 +11,7 @@ export type {
   GradientType,
   RGB,
   GradFlowProps,
+  PresetName,
 } from '@/types/gradient'
 
 // Utilities

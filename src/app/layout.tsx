@@ -1,14 +1,42 @@
 import type { Metadata } from 'next'
+import { Geist, Geist_Mono, Instrument_Serif, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 
 import { ThemeProvider } from '@/components/theme-provider'
+import SiteHeader from '@/components/site/site-header'
+import SiteFooter from '@/components/site/site-footer'
 
 import './globals.css'
 
+const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
+})
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-instrument',
+})
+
 export const metadata: Metadata = {
-  title: 'GradFlow - WebGL Gradient Backgrounds',
+  metadataBase: new URL('https://gradflow.meera.dev'),
+  title: {
+    default: 'GradFlow: animated WebGL gradients for React',
+    template: '%s · GradFlow',
+  },
   description:
-    'Create stunning animated gradient backgrounds with WebGL. Open-source React component with 60fps performance, customizable colors, noise effects,image export, and realtime controls. Perfect for modern web applications.',
+    'A WebGL gradient component for React. Twenty shaders, blended transitions between them, pointer interaction, and zero dependencies.',
+  keywords: [
+    'react',
+    'webgl',
+    'gradient',
+    'shader',
+    'animated background',
+    'mesh gradient',
+  ],
 }
 
 export default function RootLayout({
@@ -17,15 +45,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
-      <body className='antialiased bg-background text-foreground'>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
-        >
+    <html
+      lang='en'
+      suppressHydrationWarning
+      className={`${geist.variable} ${inter.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+    >
+      <body className='antialiased'>
+        <ThemeProvider>
+          <SiteHeader />
           {children}
+          <SiteFooter />
         </ThemeProvider>
         <Analytics />
       </body>

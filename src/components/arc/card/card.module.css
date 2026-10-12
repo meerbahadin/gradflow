@@ -1,0 +1,49 @@
+.card { position: relative; min-width: 0; overflow: hidden; isolation: isolate; border: 1px solid var(--border); border-radius: var(--radius-panel); background: var(--surface); color: var(--foreground); transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-standard) var(--ease-standard); }
+/* A pointed-at card floats a little, so the shadow arrives with the lift. Touch and pen never lift. */
+.card[data-hover] { border-color: var(--border-strong); box-shadow: var(--shadow-raised); }
+.card:has(.trigger:focus-visible) { border-color: var(--border-strong); }
+.media { position: relative; overflow: hidden; background: var(--surface-muted); }
+.zoom { display: grid; min-height: 112px; place-items: center; }
+.content { padding: var(--space-5); }
+/* Fit-content width keeps the title's box the shape of its text, so it scales evenly when it grows into the quick look. */
+.title { width: fit-content; max-width: 100%; margin: 0; font-size: var(--text-lg); font-weight: 500; letter-spacing: var(--tracking-body); line-height: 1.3; text-wrap: balance; }
+.trigger { padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* The title's hit area stretches over the whole card, so pointing anywhere opens the quick look while the action stays on top. */
+.trigger::after { content: ""; position: absolute; inset: 0; }
+.trigger:focus-visible { outline: none; }
+.description { max-width: 34ch; margin: var(--space-2) 0 0; color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--leading-body); text-wrap: pretty; }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-5); }
+.byline { display: flex; flex: 1 1 auto; align-items: center; gap: var(--space-3); min-width: 0; }
+.avatar { display: grid; flex: none; width: var(--space-8); height: var(--space-8); overflow: hidden; border-radius: var(--radius-pill); background: var(--surface-muted); }
+.avatar > * { width: 100%; height: 100%; object-fit: cover; }
+/* A shrinkable column, so a narrow footer truncates the byline instead of sliding it under the action. */
+.bylineText { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; font-size: var(--text-xs); line-height: var(--leading-body); }
+.meta { overflow: hidden; color: var(--foreground); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.status { position: relative; overflow: clip visible; color: var(--text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* The line clips sideways only, so a status too long for its column ends in an ellipsis while its words still rise in unclipped. */
+.roll { position: relative; display: block; }
+.line { display: block; overflow: clip visible; text-overflow: ellipsis; }
+.word { display: inline-block; white-space: pre; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.action { position: relative; z-index: 1; display: flex; flex: none; flex-wrap: wrap; gap: var(--space-3); }
+
+.overlay { position: fixed; inset: 0; z-index: 50; background: oklch(10% 0 0 / .46); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
+/* Centered with auto margins, so transform stays free for the morph. */
+.panel { position: fixed; inset: 0; z-index: 51; width: min(calc(100vw - var(--space-8)), 30rem); height: fit-content; max-height: calc(100dvh - var(--space-8)); margin: auto; overflow: hidden auto; overscroll-behavior: contain; border: 1px solid var(--border); border-radius: var(--radius-surface); background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-floating); transition: background-color var(--duration-standard) var(--ease-standard), box-shadow var(--duration-standard) var(--ease-standard); }
+.panel:focus { outline: none; }
+/* Closing: the panel takes the card's box and look, so it lands exactly where the card sits and hands back without a seam. */
+.panel[data-returning] { inset: auto; top: var(--landing-top); left: var(--landing-left); width: var(--landing-width); height: var(--landing-height); max-height: none; margin: 0; overflow: hidden; border-color: var(--border); background: var(--surface); box-shadow: none; pointer-events: none; }
+.panel[data-returning] .content { padding: var(--space-5); }
+.panel[data-returning] .title { font-size: var(--text-lg); }
+.panel .content { padding: var(--space-6); }
+.panel .title { font-size: var(--text-xl); }
+.panel .description { max-width: var(--card-measure, 34ch); }
+/* The slot carries the entrance, so the button's own press answers instantly. */
+.closeSlot { position: absolute; top: var(--space-4); right: var(--space-4); z-index: 2; display: grid; }
+.close { display: grid; width: var(--space-8); height: var(--space-8); place-items: center; padding: 0; border: 1px solid color-mix(in oklab, var(--border) 70%, transparent); border-radius: var(--radius-pill); background: color-mix(in oklab, var(--surface-raised) 74%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: var(--foreground); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color var(--duration-fast) var(--ease-standard); }
+@media (hover: hover) and (pointer: fine) { .close:hover { background: var(--surface-raised); } }
+.details { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--border); color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--leading-body); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .close { transition-duration: var(--duration-instant); }
+}

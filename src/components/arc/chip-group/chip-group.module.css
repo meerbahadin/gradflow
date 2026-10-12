@@ -1,0 +1,37 @@
+.frame { min-width: 0; }
+.content { position: relative; }
+.group { position: relative; isolation: isolate; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* The button is only the hit area and the layout box. What you see is the surface, which trails the box on a spring while the width morphs. */
+.chip { position: relative; display: inline-flex; max-width: 100%; padding: 0; border: 0; border-radius: var(--radius-pill); background: none; color: var(--text-secondary); font: inherit; font-size: var(--text-sm); font-weight: 500; letter-spacing: var(--tracking-body); line-height: 20px; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: color var(--duration-fast) var(--ease-standard); }
+/* Press answers on the body with the individual scale property, so it never fights the layout transform on the button. */
+.body { position: relative; isolation: isolate; display: inline-flex; min-width: 0; height: var(--control-height-sm); align-items: center; padding: 0 14px; transition: scale var(--duration-spring) var(--ease-spring); }
+.chip:active .body { scale: .97; transition-duration: var(--duration-instant); transition-timing-function: var(--ease-standard); }
+.surface { position: absolute; z-index: -1; top: 0; bottom: 0; left: 0; border: 1px solid var(--border); border-radius: var(--radius-pill); background: var(--surface); transition: background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard); }
+/* The check grows from its left edge where the label started; the slot hands its width to the label in one layout step, and the label's offset springs it over. */
+.check { position: absolute; top: calc(50% - 7px); left: 12px; display: grid; width: 14px; height: 14px; place-items: center; color: var(--accent-strong); transform-origin: 0 50%; }
+.check svg { display: block; overflow: visible; }
+.slot { width: 0; flex: none; }
+.body[data-selected="true"] .slot { width: 18px; }
+.label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Selected reads as a quiet tint of the accent (neutral by default) plus the check, never color alone. */
+.body[data-selected="true"] .surface { border-color: color-mix(in oklab, var(--accent) 42%, var(--border)); background: color-mix(in oklab, var(--accent) 11%, var(--surface)); }
+.chip[aria-pressed="true"] { color: var(--foreground); }
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover { color: var(--foreground); }
+  .chip:hover .surface { border-color: var(--border-strong); }
+  .chip[aria-pressed="true"]:hover .surface { border-color: color-mix(in oklab, var(--accent) 60%, var(--border)); background: color-mix(in oklab, var(--accent) 16%, var(--surface)); }
+}
+
+/* The overflow chip travels under the chips it reveals, so they seem to come out of it. */
+.chip:not(.more) { z-index: 1; }
+.more { color: var(--text-muted); }
+.more .surface { border-color: var(--border); background: var(--surface-muted); }
+.moreText { position: relative; display: inline-flex; justify-content: center; font-variant-numeric: tabular-nums; }
+.moreLine { display: block; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chip, .body, .surface { transition: none; }
+  .chip:active .body { scale: none; }
+}

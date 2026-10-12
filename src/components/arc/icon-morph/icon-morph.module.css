@@ -1,0 +1,5 @@
+.icon { display: block; flex: none; overflow: visible; }
+
+/* Liked hearts take the like color; it defaults to the danger role, the conventional red of a like. */
+.heart { transition: color var(--duration-fast) var(--ease-standard); }
+.heart[data-on] { color: var(--icon-morph-like, var(--danger)); }

@@ -7,7 +7,15 @@ import { RGB } from '@/types/gradient'
  */
 export function hexToRgb(hex: string): RGB {
   // Remove # if present
-  const cleaned = hex.replace('#', '')
+  let cleaned = hex.trim().replace('#', '')
+
+  // expand shorthand: #f0a -> #ff00aa
+  if (cleaned.length === 3) {
+    cleaned = cleaned
+      .split('')
+      .map((c) => c + c)
+      .join('')
+  }
 
   // Parse hex string
   const bigint = parseInt(cleaned, 16)

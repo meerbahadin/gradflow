@@ -1,0 +1,110 @@
+.root {
+  --picker-fill: var(--surface);
+  --picker-width: min(19rem, calc(100vw - 32px));
+  --checker: repeating-conic-gradient(oklch(88% 0 0) 0 25%, oklch(100% 0 0) 0 50%) 0 0 / 10px 10px;
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-body);
+  letter-spacing: var(--tracking-body);
+  color: var(--foreground);
+}
+:global(:root[data-theme="dark"]) .root { --picker-fill: var(--surface-raised); --checker: repeating-conic-gradient(oklch(42% 0 0) 0 25%, oklch(30% 0 0) 0 50%) 0 0 / 10px 10px; }
+
+.trigger, .head { display: flex; height: 44px; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; }
+.trigger {
+  border: 1px solid var(--border); border-radius: 22px; background: var(--picker-fill); box-shadow: var(--shadow-resting); color: inherit; font: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.triggerText { display: grid; min-width: 0; text-align: start; line-height: 1.15; }
+.name { color: var(--text-secondary); font-size: var(--text-xs); }
+.hex { font-size: var(--text-sm); font-variant-numeric: tabular-nums; font-weight: 500; }
+
+/* A chip over a checkerboard, so opacity reads as opacity. */
+.chip { position: relative; display: block; width: 32px; height: 32px; flex: none; overflow: hidden; border-radius: 50%; background: var(--checker); }
+.chip > span { position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px oklch(0% 0 0 / .1); }
+
+/* The floating layer. Its drop shadow follows the clipped shape, so the shadow grows with the panel. */
+.float { position: absolute; z-index: 20; top: -1px; left: -1px; filter: drop-shadow(0 18px 36px oklch(0% 0 0 / .12)) drop-shadow(0 2px 6px oklch(0% 0 0 / .06)); pointer-events: none; }
+:global(:root[data-theme="dark"]) .float { filter: drop-shadow(0 20px 44px oklch(0% 0 0 / .5)); }
+.float[data-open] { pointer-events: auto; }
+.panel { width: var(--picker-width); padding-bottom: 14px; border: 1px solid var(--border); border-radius: var(--radius-panel); background: var(--picker-fill); will-change: clip-path; }
+.head { gap: 10px; padding-right: 6px; }
+.head .triggerText { flex: 1; }
+.headActions { display: flex; gap: 2px; }
+.iconButton {
+  display: grid; width: 32px; height: 32px; place-items: center; padding: 0; border: 0; border-radius: 12px; background: transparent; color: var(--text-secondary); cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+}
+.iconButton:active { transform: scale(.94); }
+/* One column locked to the panel: a wider grade label ("AA large") must never widen the area and sliders mid drag. */
+.body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 8px 14px 0; }
+
+/* Saturation runs left to right, brightness bottom to top, over the pure hue. */
+.area {
+  position: relative; height: 164px; border-radius: 16px; cursor: crosshair; touch-action: none;
+  background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent), var(--picker-hue);
+  box-shadow: inset 0 0 0 1px oklch(0% 0 0 / .08);
+}
+.areaThumb, .sliderThumb {
+  position: absolute; width: 22px; height: 22px; border-radius: 50%; translate: -50% -50%; cursor: grab;
+  box-shadow: 0 0 0 3px #fff, 0 2px 8px oklch(0% 0 0 / .3), inset 0 0 0 1px oklch(0% 0 0 / .12);
+  transition: scale var(--duration-spring) var(--ease-spring);
+}
+.areaThumb { background: var(--picker-opaque); }
+.area[data-active] .areaThumb, .sliderThumb[data-active] { scale: 1.2; cursor: grabbing; }
+
+.slider { position: relative; height: 14px; margin: 0 11px; border-radius: var(--radius-pill); cursor: pointer; touch-action: none; }
+.slider::before { content: ""; position: absolute; inset: 0 -11px; border-radius: inherit; background: var(--track); box-shadow: inset 0 0 0 1px oklch(0% 0 0 / .08); }
+.sliderThumb { top: 50%; background: var(--checker); }
+.sliderThumb::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--thumb-fill); }
+/* The gradient stops sit at the thumb's travel ends, so the color under the thumb is the value it reports. */
+.hue { --track: linear-gradient(to right, #f00 11px, #ff0 calc(11px + (100% - 22px) * .1666), #0f0 calc(11px + (100% - 22px) * .3333), #0ff 50%, #00f calc(11px + (100% - 22px) * .6666), #f0f calc(11px + (100% - 22px) * .8333), #f00 calc(100% - 11px)); }
+.alpha { --track: linear-gradient(to right, transparent 11px, var(--picker-opaque) calc(100% - 11px)), var(--checker); }
+
+.field { display: flex; height: 40px; align-items: stretch; overflow: hidden; margin-top: 2px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-muted); transition: border-color var(--duration-fast) var(--ease-standard); }
+.field[data-invalid] { border-color: var(--danger); }
+.format {
+  display: flex; min-width: 56px; align-items: center; justify-content: center; padding: 0 10px; border: 0; border-right: 1px solid var(--border); background: transparent;
+  color: var(--foreground); font: inherit; font-size: var(--text-xs); font-weight: 500; cursor: pointer; transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.inputWrap { position: relative; display: flex; min-width: 0; flex: 1; }
+.input, .morph { padding: 0 10px; font: inherit; font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--foreground); caret-color: var(--foreground); }
+.input[data-morphing] { color: transparent; }
+.morph { position: absolute; inset: 0; display: flex; align-items: center; overflow: hidden; color: var(--foreground); pointer-events: none; white-space: nowrap; }
+.error { min-height: 0; margin: -10px 2px -4px; color: var(--danger); font-size: var(--text-xs); }
+.error:empty { display: none; }
+
+.contrast { display: flex; align-items: center; gap: 10px; font-size: var(--text-sm); }
+.sample { display: grid; width: 36px; height: 28px; flex: none; place-items: center; border: 1px solid var(--border); border-radius: 9px; background: var(--picker-bg); color: var(--picker-color); font-weight: 500; }
+.ratio { font-variant-numeric: tabular-nums; font-weight: 500; min-width: 4.4ch; }
+.against { flex: 1; min-width: 0; overflow: hidden; color: var(--text-secondary); font-size: var(--text-xs); text-overflow: ellipsis; white-space: nowrap; }
+.grade { position: relative; display: inline-grid; height: 22px; align-items: center; padding: 0 8px; border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: 500; white-space: nowrap; transition: background-color var(--duration-standard) var(--ease-standard), color var(--duration-standard) var(--ease-standard); }
+.grade[data-grade="pass"] { background: color-mix(in oklab, var(--success) 14%, transparent); color: var(--success); }
+.grade[data-grade="large"] { background: color-mix(in oklab, var(--warning) 16%, transparent); color: var(--warning); }
+.grade[data-grade="fail"] { background: color-mix(in oklab, var(--danger) 12%, transparent); color: var(--danger); }
+
+.swatches { display: flex; align-items: center; gap: 6px; min-height: 32px; }
+.add {
+  display: grid; width: 30px; height: 30px; flex: none; place-items: center; padding: 0; border: 1px dashed var(--border-strong); border-radius: 50%; background: transparent; color: var(--text-secondary); cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+}
+.add:active { transform: scale(.92); }
+.swatchList { display: flex; min-width: 0; flex: 1; gap: 6px; }
+.swatchSlot { position: relative; flex: none; touch-action: pan-y; }
+.swatch { display: grid; width: 30px; height: 30px; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.swatchChip { width: 26px; height: 26px; transition: scale var(--duration-spring) var(--ease-spring); }
+.swatch[data-current] { box-shadow: inset 0 0 0 2px var(--foreground); }
+.swatch[data-current] .swatchChip { scale: .78; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover { border-color: var(--border-strong); }
+  .iconButton:hover, .format:hover { background: var(--surface-muted); color: var(--foreground); }
+  .format:hover { background: color-mix(in oklab, var(--foreground) 5%, transparent); }
+  .add:hover { border-color: var(--foreground); color: var(--foreground); }
+}
+@media (max-width: 360px) { .against { display: none; } }
+@media (prefers-contrast: more) { .trigger, .panel, .field { border-color: var(--border-strong); } }
+@media (prefers-reduced-motion: reduce) { .areaThumb, .sliderThumb, .swatchChip, .iconButton, .add { transition: none; } }
