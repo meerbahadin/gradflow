@@ -18,7 +18,7 @@ Beautiful animated WebGL gradients for React. Create stunning, performant gradie
 
 ## Demo
 
-Visit [gradflow.meera.dev](https://gradflow.meera.dev) to see GradFlow in action and experiment with different configurations.
+Visit [gradflow.meerbahadin.dev](https://gradflow.meerbahadin.dev) to see GradFlow in action and experiment with different configurations.
 
 ## Installation
 
@@ -259,7 +259,7 @@ MIT License - feel free to use in your projects!
 
 ## Credits
 
-Created by [Meer](https://www.meera.dev/)
+Created by [Meer](https://www.meerbahadin.dev/)
 
 ---
 

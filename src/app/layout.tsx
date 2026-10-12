@@ -22,7 +22,7 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://gradflow.meera.dev'),
+  metadataBase: new URL('https://gradflow.meerbahadin.dev'),
   title: {
     default: 'GradFlow: animated WebGL gradients for React',
     template: '%s · GradFlow',
