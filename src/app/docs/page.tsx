@@ -112,9 +112,9 @@ export default function Hero() {
 const CONFIG_EXAMPLE = `<GradFlow
   config={{
     type: 'prism',
-    color1: '#ff3c78',
+    color1: '#ff5a1e',
     color2: { r: 60, g: 110, b: 255 },
-    color3: '#5affc8',
+    color3: '#78d2ff',
     speed: 0.5,
     scale: 1,
     noise: 0.1,

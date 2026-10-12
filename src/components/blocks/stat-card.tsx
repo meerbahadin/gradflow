@@ -21,7 +21,7 @@ export default function StatCard() {
     <div className='flex h-full min-h-[360px] flex-col overflow-hidden bg-surface'>
       <div className='on-gradient relative isolate h-36 shrink-0 overflow-hidden bg-black p-5'>
         <div className='pointer-events-none absolute inset-0 -z-10'>
-          <GradFlow preset='lagoon' />
+          <GradFlow preset='maelstrom' />
         </div>
         <p className='font-mono text-[11px] uppercase tracking-[0.14em]'>
           Revenue · last 12 weeks

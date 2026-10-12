@@ -57,7 +57,7 @@ const PALETTE: Omit<GradientConfigInput, 'type'> = {
   noise: 0.08,
 }
 
-const SAME_PALETTE: GradientType[] = ['mesh', 'prism', 'glass', 'cells', 'silk']
+const SAME_PALETTE: GradientType[] = ['mesh', 'prism', 'glass', 'horizon', 'silk']
 
 /** One palette run through several shaders. */
 export function PaletteStrip() {
