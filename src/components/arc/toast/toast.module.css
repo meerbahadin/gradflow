@@ -1,0 +1,100 @@
+.toast {
+  display: flex;
+  width: min(100%, 26rem);
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 0.875rem 0.875rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  background: color-mix(in oklab, var(--surface) 94%, var(--background));
+  color: var(--foreground);
+  letter-spacing: var(--tracking-body);
+  box-shadow: var(--shadow-floating);
+}
+
+.icon {
+  display: grid;
+  width: 1.875rem;
+  height: 1.875rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in oklab, var(--success) 24%, var(--border));
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklab, var(--success) 10%, var(--surface));
+  color: var(--success);
+}
+
+.frame {
+  display: block;
+  min-width: 0;
+  flex: 1;
+}
+
+.copy {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  gap: 0.125rem;
+  /* Centers the title's first line on the 30px status icon. */
+  padding-top: 0.3125rem;
+}
+
+.title {
+  position: relative;
+  display: block;
+  min-width: 0;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: var(--leading-body);
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.description {
+  display: block;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+}
+
+.close {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  margin: -0.0625rem -0.125rem 0 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: transform var(--duration-spring) var(--ease-spring),
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background: var(--surface-muted);
+    color: var(--foreground);
+  }
+}
+
+/* Quick press, spring release. */
+.close:active {
+  transform: scale(0.96);
+  transition-duration: var(--duration-instant);
+  transition-timing-function: var(--ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .close { transition: none; }
+  .close:active { transform: none; }
+}

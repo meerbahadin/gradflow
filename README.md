@@ -4,7 +4,10 @@ Beautiful animated WebGL gradients for React. Create stunning, performant gradie
 
 ## Features
 
-- 🎨 **9 Gradient Types**: Linear, Conic, Animated, Wave, Silk, Smoke, Stripe, Mesh, and Aurora
+- 🎨 **20 Gradient Types**: from Aurora, Mesh and Silk to Lava, Prism, Caustics, Glass and Nebula
+- 🌊 **Blended Transitions**: changing type, colors or speed morphs the canvas instead of cutting
+- 🖱️ **Pointer Interaction**: an optional lens that swells the pattern under the cursor
+- 📦 **Zero Dependencies**: raw WebGL, about 11 kB gzipped
 - ♿ **Motion-Aware**: Respects `prefers-reduced-motion` and supports a `paused` prop
 - 🔋 **Battery Friendly**: Automatically stops rendering when offscreen or in a hidden tab
 - 🚀 **High Performance**: WebGL-powered rendering with optimized shaders
@@ -90,7 +93,7 @@ function App() {
 }
 ```
 
-Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`, `dream`, `borealis`
+Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`, `dream`, `borealis`, `magma`, `lagoon`, `andromeda`, `cathedral`, `atlas`, `reeded`, `maelstrom`, `newsprint`, `spectrum`, `coral`, `sahara`, `mono`
 
 Presets can be combined with `config` — config values override the preset:
 
@@ -106,16 +109,50 @@ Presets can be combined with `config` — config values override the preset:
 
 Renders a static frame without the animation loop. GradFlow also pauses itself automatically when the canvas is scrolled offscreen, the tab is hidden, or the user has `prefers-reduced-motion` enabled.
 
+### Transitions
+
+When `preset` or `config` changes, the canvas blends to the new look. Colors, speed, scale and noise interpolate, and a change of type dissolves one pattern into the other. `transition` sets the duration in milliseconds; `0` switches instantly.
+
+```tsx
+<GradFlow preset={preset} transition={1200} />
+```
+
+### Pointer Interaction
+
+```tsx
+<GradFlow preset='atlas' interactive />
+```
+
+The pattern is magnified under the pointer. The pointer is tracked on the window, so it works when the canvas sits behind other content.
+
+### Exporting a Still
+
+The ref is forwarded to the canvas. Set `preserveDrawingBuffer` on any gradient you want to read back.
+
+```tsx
+const canvas = useRef<HTMLCanvasElement>(null)
+
+<GradFlow ref={canvas} preset='spectrum' preserveDrawingBuffer />
+
+canvas.current?.toBlob((blob) => {
+  /* save it */
+})
+```
+
 ## API Reference
 
 ### GradFlow Component
 
-| Prop        | Type                  | Default          | Description                             |
-| ----------- | --------------------- | ---------------- | --------------------------------------- |
-| `config`    | `GradientConfigInput` | `DEFAULT_CONFIG` | Gradient configuration object           |
-| `preset`    | `string`              | —                | Built-in preset name (e.g. `'cosmic'`)  |
-| `paused`    | `boolean`             | `false`          | Freeze the animation on a static frame  |
-| `className` | `string`              | `''`             | Additional CSS classes                  |
+| Prop                    | Type                     | Default          | Description                                                  |
+| ----------------------- | ------------------------ | ---------------- | ------------------------------------------------------------ |
+| `config`                | `GradientConfigInput`    | `DEFAULT_CONFIG` | Gradient configuration object                                |
+| `preset`                | `PresetName`             | —                | Built-in preset name (e.g. `'cosmic'`)                       |
+| `transition`            | `number`                 | `700`            | Milliseconds a config change takes to blend in; `0` disables |
+| `interactive`           | `boolean`                | `false`          | Swell the pattern under the pointer                          |
+| `paused`                | `boolean`                | `false`          | Freeze the animation on a static frame                       |
+| `preserveDrawingBuffer` | `boolean`                | `false`          | Keep the canvas readable for `toBlob` / `toDataURL`          |
+| `className`             | `string`                 | `''`             | Additional CSS classes                                       |
+| `ref`                   | `Ref<HTMLCanvasElement>` | —                | Forwarded to the canvas element                              |
 
 ### GradientConfigInput
 
@@ -150,6 +187,19 @@ type RGB = {
 - `stripe` - Warped stripe patterns
 - `mesh` - Soft drifting color blobs (mesh gradient)
 - `aurora` - Northern-lights curtains (default)
+- `lava` - Metaballs that merge and split
+- `caustics` - Light through moving water
+- `nebula` - Warped dust clouds over a star field
+- `rays` - Shafts of light from above
+- `topo` - An animated contour map
+- `glass` - A soft field behind fluted glass
+- `vortex` - A three-armed logarithmic spiral
+- `halftone` - A rotated dot screen
+- `prism` - Bands of light split into three colors
+- `cells` - Voronoi cells with drifting sites
+- `dunes` - Layered, drifting ridgelines
+
+`GRADIENT_TYPES` exports the full list as an array.
 
 ## Utility Functions
 
@@ -183,10 +233,10 @@ const colors = generateRandomColors()
 
 ## Performance Tips
 
-- Use `scale` values between 0.5-2.0 for optimal performance
-- Lower `noise` values (< 0.2) perform better
-- Consider using `will-change: transform` CSS for smooth animations
-- The component automatically limits device pixel ratio to 2 for performance
+- Each `GradFlow` owns a WebGL context, and browsers allow roughly 16 per page. Keep the number mounted at once in single digits.
+- The render loop stops while the canvas is offscreen or the tab is hidden.
+- The component limits device pixel ratio to 2.
+- If the browser drops the WebGL context, GradFlow rebuilds its program when the context is restored.
 
 ## Requirements
 

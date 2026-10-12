@@ -1,0 +1,30 @@
+.themeSwitch {
+  position: relative;
+  width: auto;
+  padding-inline: var(--space-3);
+}
+.iconOnly { width: 38px; min-width: 38px; height: 38px; min-height: 38px; border-radius: 12px; padding: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .themeSwitch:hover:not(:disabled) { border-color: var(--border-strong); }
+  .iconOnly:hover:not(:disabled) { background: var(--surface-muted); box-shadow: none; }
+}
+.iconWrap {
+  position: relative;
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  place-items: center;
+}
+/* The nudge only eases once the switch has settled, so a theme that arrives during hydration lands without motion. */
+.settled .iconWrap { transition: transform var(--duration-spring) var(--ease-spring); }
+.icon { position: absolute; display: grid; width: 18px; height: 18px; place-items: center; }
+.label { white-space: nowrap; }
+/* Each variant nudges the icon the way its page transition travels, and eases back when the theme returns. */
+.themeSwitch.reveal[data-theme="dark"] .iconWrap { transform: scale(1.08); }
+.themeSwitch.eclipse[data-theme="dark"] .iconWrap { transform: translateX(-2px); }
+.themeSwitch.split[data-theme="dark"] .iconWrap { transform: translateX(1px); }
+.themeSwitch.rise[data-theme="dark"] .iconWrap { transform: translateY(-2px); }
+@media (prefers-reduced-motion: reduce) {
+  .settled .iconWrap { transition: none; }
+}

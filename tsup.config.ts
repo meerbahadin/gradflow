@@ -7,6 +7,9 @@ export default defineConfig({
   dts: {
     compilerOptions: {
       incremental: false,
+      // tsup resolves the "@/" alias by injecting baseUrl, which TypeScript 6
+      // reports as deprecated and fails the declaration build on
+      ignoreDeprecations: '6.0',
     },
   },
   splitting: false,

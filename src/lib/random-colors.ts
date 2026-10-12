@@ -1,4 +1,5 @@
 import { RGB, GradientConfig, GradientType } from '@/types/gradient'
+import { GRADIENT_TYPES } from '@/constants/gradients'
 
 export function randomRGB(): RGB {
   return {
@@ -8,20 +9,8 @@ export function randomRGB(): RGB {
   }
 }
 
-const gradientTypes: GradientType[] = [
-  'linear',
-  'animated',
-  'conic',
-  'wave',
-  'silk',
-  'smoke',
-  'stripe',
-  'mesh',
-  'aurora',
-]
-
 export function randomGradientType(): GradientType {
-  return gradientTypes[Math.floor(Math.random() * gradientTypes.length)]
+  return GRADIENT_TYPES[Math.floor(Math.random() * GRADIENT_TYPES.length)]
 }
 
 export function generateRandomColors(): Partial<GradientConfig> {

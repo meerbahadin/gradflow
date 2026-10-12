@@ -1,0 +1,60 @@
+.avatar {
+  position: relative;
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: visible;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  color: var(--foreground);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+
+.avatar img {
+  pointer-events: none;
+  border-radius: inherit;
+  object-fit: cover;
+  transition: opacity var(--duration-standard) var(--ease-enter), filter var(--duration-standard) var(--ease-enter);
+}
+
+/* Set only while a photo is still downloading after mount, so cached photos never fade. */
+.avatar img[data-loading] {
+  opacity: 0;
+  filter: blur(4px);
+  transition: none;
+}
+
+.fallback { animation: avatar-fallback-in var(--duration-standard) var(--ease-enter) both; }
+
+.sm { width: 28px; height: 28px; font-size: 10px; }
+.md { width: 36px; height: 36px; }
+.lg { width: 48px; height: 48px; font-size: var(--text-sm); }
+.xl { width: 88px; height: 88px; font-size: var(--text-xl); }
+
+.status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--surface);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--border) 70%, transparent);
+}
+
+.sm .status { width: 8px; height: 8px; border-width: 1.5px; }
+.lg .status { width: 12px; height: 12px; }
+.xl .status { width: 14px; height: 14px; right: 4px; bottom: 4px; }
+.online { background: var(--success); }
+.offline { background: var(--text-muted); }
+
+@keyframes avatar-fallback-in { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar img { transition: none; }
+  .avatar img[data-loading] { filter: none; }
+  .fallback { animation: none; }
+}

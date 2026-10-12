@@ -1,0 +1,13 @@
+.wrap { min-width: 0; color: var(--foreground); }
+/* Clips hide the rise; padding with matching negative margins leaves room for descenders and blur without changing layout. */
+.clip { display: inline-block; overflow: hidden; vertical-align: top; padding: .08em .14em .2em; margin: -.08em -.14em -.2em; }
+.lineClip { display: block; overflow: hidden; padding: .06em .12em .18em; margin: -.06em -.12em -.18em; }
+.clip > span, .lineClip > span, .blurWord, .trackWord, .trackWord > span { display: inline-block; }
+.trackWord { white-space: nowrap; }
+/* The wipe mask is 2.3 times the title's width with a feathered middle, so the soft edge sits fully outside the title at both ends of the sweep.
+   Padding with matching negative margins keeps descenders and overhangs inside the masked box without changing layout. */
+.wipe { padding: .1em .12em .22em; margin: -.1em -.12em -.22em; mask-image: linear-gradient(90deg, #000 44%, transparent 56%); mask-size: 230% 100%; mask-repeat: no-repeat; mask-position: var(--wipe, 0%) 0; }
+/* Server rendered titles start hidden. If scripts have not taken over after 2.4s, show them anyway; the class is removed on hydration. */
+.pending .part { animation: settle .4s var(--ease-enter) 2.4s forwards; }
+@keyframes settle { to { opacity: 1; transform: none; filter: none; --wipe: 0%; mask-image: none; } }
+@media (prefers-reduced-motion: reduce) { .part { opacity: 1 !important; transform: none !important; filter: none !important; mask-image: none !important; } .pending .part { animation: none; } }
