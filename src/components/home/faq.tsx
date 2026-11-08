@@ -23,6 +23,11 @@ const QUESTIONS = [
       'They get a single still frame of the same gradient. Nothing animates, and the pointer effect is switched off. You can force the same behaviour yourself with the paused prop.',
   },
   {
+    title: 'Does it work in Expo and React Native?',
+    content:
+      'Yes, through gradflow-expo. It draws the same shaders and presets with expo-gl, runs in Expo Go, and stops drawing while the app is in the background or Reduce Motion is on.',
+  },
+  {
     title: 'Can I export a still image?',
     content:
       'Yes. GradFlow forwards its ref to the canvas, so with preserveDrawingBuffer set you can call toBlob or toDataURL on it at any time. The playground does exactly that.',
@@ -30,7 +35,7 @@ const QUESTIONS = [
   {
     title: 'Can I write my own shader?',
     content:
-      'Not through the public API yet. The twenty built-in types cover a wide range, and each responds to scale, speed, noise and your three colors.',
+      'Not through the public API yet. The twenty-one built-in types cover a wide range, and each responds to scale, speed, noise and your three colors.',
   },
 ]
 

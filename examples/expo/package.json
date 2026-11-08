@@ -1,0 +1,31 @@
+{
+  "name": "gradflow-expo-example",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "prestart": "npm --prefix ../../packages/expo run build",
+    "start": "expo start",
+    "ios": "expo start --ios",
+    "android": "expo start --android",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
+    "expo": "~58.0.23",
+    "expo-gl": "~58.0.4",
+    "expo-haptics": "~58.0.7",
+    "expo-status-bar": "~58.0.4",
+    "gradflow-expo": "file:../../packages/expo",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-web": "~0.21.4"
+  },
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "typescript": "~5.9.3"
+  }
+}

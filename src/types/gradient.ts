@@ -25,6 +25,7 @@ export type GradientType =
   | 'prism'
   | 'dunes'
   | 'horizon'
+  | 'glow'
 
 export type GradientConfig = {
   color1: RGB
@@ -69,6 +70,8 @@ export type PresetName =
   | 'sahara'
   | 'twilight'
   | 'mono'
+  | 'gemini'
+  | 'halo'
 
 export type GradFlowProps = {
   config?: GradientConfigInput

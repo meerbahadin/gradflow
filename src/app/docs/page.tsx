@@ -32,6 +32,7 @@ const SECTIONS: DocsSection[] = [
   { id: 'export', label: 'Exporting a still' },
   { id: 'performance', label: 'Performance' },
   { id: 'accessibility', label: 'Accessibility' },
+  { id: 'expo', label: 'Expo & React Native' },
 ]
 
 const PROPS = [
@@ -94,6 +95,24 @@ const CONFIG = [
   { name: 'scale', type: 'number', fallback: '1.2', description: 'Zoom of the pattern. Higher values show more, finer detail.' },
   { name: 'noise', type: 'number', fallback: '0.32', description: 'Film grain from 0 to 0.5. Hides banding on wide, soft ramps.' },
 ]
+
+const EXPO_INSTALL = 'npx expo install gradflow-expo expo-gl'
+
+const EXPO_EXAMPLE = `import { StyleSheet, Text } from 'react-native'
+import { GradFlow } from 'gradflow-expo'
+
+export default function Screen({ thinking }: { thinking: boolean }) {
+  return (
+    <GradFlow
+      preset={thinking ? 'halo' : 'gemini'}
+      transition={900}
+      interactive
+      style={StyleSheet.absoluteFill}
+    >
+      <Text style={{ color: 'white' }}>Your content, on top.</Text>
+    </GradFlow>
+  )
+}`
 
 const USAGE = `import { GradFlow } from 'gradflow'
 
@@ -393,6 +412,23 @@ export default function DocsPage() {
             contrast between your text and the brightest part of the
             pattern; a scrim over the edge your text sits on is usually
             enough.
+          </P>
+        </Section>
+
+        <Section id='expo' title='Expo & React Native'>
+          <P>
+            <C>gradflow-expo</C> draws the same shaders and presets with{' '}
+            <C>expo-gl</C>, so it runs in Expo Go, in development builds and
+            on the web. It is a view: size it with <C>style</C>, and its
+            children are drawn on top of the gradient.
+          </P>
+          <CodeBlock code={EXPO_INSTALL} language='bash' />
+          <CodeBlock code={EXPO_EXAMPLE} language='tsx' />
+          <P>
+            It takes <C>preset</C>, <C>config</C>, <C>transition</C>,{' '}
+            <C>paused</C> and <C>interactive</C>, which swells the pattern
+            under the finger. The loop stops while the app is in the
+            background and when Reduce Motion is on.
           </P>
         </Section>
       </div>

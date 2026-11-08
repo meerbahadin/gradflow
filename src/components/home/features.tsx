@@ -88,7 +88,7 @@ export default function Features() {
           <PaletteStrip />
           <CardCopy title='Three colors in.'>
             Every shader reads the same three colors, as hex strings or RGB
-            objects, so a palette carries across all twenty.
+            objects, so a palette carries across all twenty-one.
           </CardCopy>
         </div>
       </div>

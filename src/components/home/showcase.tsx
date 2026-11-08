@@ -16,7 +16,7 @@ export default function Showcase() {
           These are working components, and their source is one click away.
         </SectionHeading>
         <ButtonLink href='/demo' variant='secondary'>
-          See all five
+          See all six
           <ArrowUpRight className='size-4' />
         </ButtonLink>
       </div>

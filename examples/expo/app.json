@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "GradFlow",
+    "slug": "gradflow-expo-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": { "supportsTablet": true },
+    "android": { "edgeToEdgeEnabled": true },
+    "web": { "bundler": "metro" }
+  }
+}

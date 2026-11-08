@@ -725,6 +725,46 @@ export const FRAGMENT_SHADER = `
     return clamp(color, 0.0, 1.0);
   }
 
+  // light hugging the edges of the frame, the way a voice assistant shows
+  // that it is listening: a rounded-rect distance field, a band whose width
+  // breathes around the perimeter, and the three colors chasing each other
+  vec3 glowGradient(vec2 uv, float time) {
+    float ratio = u_resolution.x / max(u_resolution.y, 1.0);
+    vec2 half_ = vec2(ratio, 1.0) * 0.5;
+    vec2 p = (uv - 0.5) * vec2(ratio, 1.0);
+
+    // distance in from the nearest edge, rounded at the corners
+    // a soft minimum of the distances to the four sides keeps the field free
+    // of the creases a hard min draws along the diagonals
+    vec2 d = max(half_ - abs(p), 0.0);
+    float k = 0.06;
+    float edge = -k * log(exp(-d.x / k) + exp(-d.y / k)) + k * 0.69;
+    edge = max(edge, 0.0);
+
+    float around = atan(p.y, p.x) / (2.0 * PI) + 0.5;
+    float width = 0.05 + 0.03 * sin(time * 1.4 + around * 4.0 * PI);
+    width += 0.05 * advancedNoise(vec2(around * 8.0, time * 0.5));
+    width *= u_scale;
+    float g = exp(-edge / max(width, 0.004));
+
+    float t = fract(around + time * 0.06);
+    vec3 band = t < 1.0 / 3.0
+      ? mix(u_color1, u_color2, smoothstep(0.0, 1.0 / 3.0, t))
+      : t < 2.0 / 3.0
+        ? mix(u_color2, u_color3, smoothstep(1.0 / 3.0, 2.0 / 3.0, t))
+        : mix(u_color3, u_color1, smoothstep(2.0 / 3.0, 1.0, t));
+
+    // a dark field faintly tinted by all three colors, so the middle never
+    // reads as flat black
+    vec3 tint = (u_color1 + u_color2 + u_color3) / 3.0;
+    vec3 color = vec3(0.012, 0.013, 0.024) + tint * 0.035;
+    color += band * g * 1.1;
+    // the hottest sliver at the very edge burns toward white
+    color = mix(color, vec3(1.0), smoothstep(0.8, 1.0, g) * 0.3);
+
+    return clamp(color, 0.0, 1.0);
+  }
+
   vec3 shade(int type, vec2 uv, float time) {
     if (type == 0) return linearGradient(uv, time);
     if (type == 1) return conicGradient(uv, time);
@@ -746,6 +786,7 @@ export const FRAGMENT_SHADER = `
     if (type == 17) return prismGradient(uv, time);
     if (type == 18) return dunesGradient(uv, time);
     if (type == 19) return horizonGradient(uv, time);
+    if (type == 20) return glowGradient(uv, time);
     return animatedGradient(uv, time);
   }
 
