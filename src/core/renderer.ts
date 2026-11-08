@@ -61,7 +61,7 @@ function compile(gl: GL, type: number, source: string) {
   gl.compileShader(shader)
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    if (!gl.isContextLost()) {
+    if (!gl.isContextLost?.()) {
       console.error('gradflow: shader failed to compile', gl.getShaderInfoLog(shader))
     }
     gl.deleteShader(shader)
@@ -87,7 +87,7 @@ function link(gl: GL) {
   gl.deleteShader(fragment)
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    if (!gl.isContextLost()) {
+    if (!gl.isContextLost?.()) {
       console.error('gradflow: program failed to link', gl.getProgramInfoLog(program))
     }
     gl.deleteProgram(program)
@@ -98,24 +98,19 @@ function link(gl: GL) {
 }
 
 /**
- * A minimal WebGL renderer for the gradient shader: one program, one
- * full-screen triangle. Returns null when the browser won't hand out a
- * context — callers should treat that as "nothing to draw", not as an error.
+ * The context-level half of the renderer: compiles the program, uploads the
+ * triangle and draws frames into whatever WebGL context it is handed. It
+ * knows nothing about canvases or the DOM, so the Expo package drives it
+ * with an expo-gl context and the web build with a canvas context.
  */
-export function createRenderer(
-  canvas: HTMLCanvasElement,
-  options: { preserveDrawingBuffer?: boolean } = {}
-): GradientRenderer | null {
-  const gl = canvas.getContext('webgl', {
-    alpha: false,
-    antialias: false,
-    depth: false,
-    stencil: false,
-    preserveDrawingBuffer: options.preserveDrawingBuffer ?? false,
-    powerPreference: 'high-performance',
-  })
-  if (!gl) return null
+export type ContextRenderer = GradientRenderer & {
+  /** Rebuilds the program, e.g. after the context was lost and restored. */
+  setup: () => void
+  /** Forgets GPU handles without deleting them (they died with the context). */
+  invalidate: () => void
+}
 
+export function createContextRenderer(gl: GL): ContextRenderer {
   let program: WebGLProgram | null = null
   let buffer: WebGLBuffer | null = null
   let locations: Locations | null = null
@@ -142,21 +137,17 @@ export function createRenderer(
     ) as Locations
   }
 
-  // browsers drop contexts under memory pressure or when a page holds too
-  // many; without preventDefault the context is never offered back
-  const onLost = (event: Event) => {
-    event.preventDefault()
-    program = null
-    locations = null
-  }
-  const onRestored = () => setup()
-
-  canvas.addEventListener('webglcontextlost', onLost)
-  canvas.addEventListener('webglcontextrestored', onRestored)
-
   setup()
 
   return {
+    setup,
+
+    invalidate() {
+      program = null
+      buffer = null
+      locations = null
+    },
+
     draw(u, width, height, cssWidth, cssHeight) {
       if (!program || !locations) return
 
@@ -177,12 +168,53 @@ export function createRenderer(
     },
 
     dispose() {
-      canvas.removeEventListener('webglcontextlost', onLost)
-      canvas.removeEventListener('webglcontextrestored', onRestored)
       if (buffer) gl.deleteBuffer(buffer)
       if (program) gl.deleteProgram(program)
       program = null
+      buffer = null
       locations = null
+    },
+  }
+}
+
+/**
+ * A minimal WebGL renderer for the gradient shader: one program, one
+ * full-screen triangle. Returns null when the browser won't hand out a
+ * context — callers should treat that as "nothing to draw", not as an error.
+ */
+export function createRenderer(
+  canvas: HTMLCanvasElement,
+  options: { preserveDrawingBuffer?: boolean } = {}
+): GradientRenderer | null {
+  const gl = canvas.getContext('webgl', {
+    alpha: false,
+    antialias: false,
+    depth: false,
+    stencil: false,
+    preserveDrawingBuffer: options.preserveDrawingBuffer ?? false,
+    powerPreference: 'high-performance',
+  })
+  if (!gl) return null
+
+  const renderer = createContextRenderer(gl)
+
+  // browsers drop contexts under memory pressure or when a page holds too
+  // many; without preventDefault the context is never offered back
+  const onLost = (event: Event) => {
+    event.preventDefault()
+    renderer.invalidate()
+  }
+  const onRestored = () => renderer.setup()
+
+  canvas.addEventListener('webglcontextlost', onLost)
+  canvas.addEventListener('webglcontextrestored', onRestored)
+
+  return {
+    draw: renderer.draw,
+    dispose() {
+      canvas.removeEventListener('webglcontextlost', onLost)
+      canvas.removeEventListener('webglcontextrestored', onRestored)
+      renderer.dispose()
     },
   }
 }

@@ -90,7 +90,7 @@ export default function Hero() {
             </h1>
 
             <p className='mt-7 max-w-lg text-pretty text-base leading-relaxed text-subtle sm:text-lg'>
-              A WebGL gradient component for React. Twenty shaders, one prop
+              A WebGL gradient component for React. Twenty-one shaders, one prop
               to move between them, and nothing else to install.
             </p>
 

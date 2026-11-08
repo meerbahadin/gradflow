@@ -35,3 +35,7 @@ docs/
 
 # Development assets
 public/
+
+# Other packages and examples in this repo
+packages/
+examples/

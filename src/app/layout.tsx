@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: '%s · GradFlow',
   },
   description:
-    'A WebGL gradient component for React. Twenty shaders, blended transitions between them, pointer interaction, and zero dependencies.',
+    'A WebGL gradient component for React. Twenty-one shaders, blended transitions between them, pointer interaction, and zero dependencies.',
   keywords: [
     'react',
     'webgl',

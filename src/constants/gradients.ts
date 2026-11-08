@@ -42,6 +42,7 @@ export const GRADIENT_TYPE_NUMBER: Record<GradientType, number> = {
   prism: 17,
   dunes: 18,
   horizon: 19,
+  glow: 20,
 }
 
 /** Every gradient type, in display order. */
@@ -247,5 +248,25 @@ export const PRESETS = {
     scale: 1.4,
     type: 'smoke' as GradientType,
     noise: 0.18,
+  },
+  // the blue-to-rose glow of an AI assistant waking up at the bottom of the screen
+  gemini: {
+    color1: { r: 52, g: 110, b: 232 },
+    color2: { r: 8, g: 9, b: 20 },
+    color3: { r: 124, g: 44, b: 112 },
+    speed: 0.6,
+    scale: 1.05,
+    type: 'horizon' as GradientType,
+    noise: 0.08,
+  },
+  // light running around the edges of the frame, for "listening" and "thinking" states
+  halo: {
+    color1: { r: 66, g: 133, b: 244 },
+    color2: { r: 155, g: 114, b: 203 },
+    color3: { r: 217, g: 101, b: 112 },
+    speed: 0.7,
+    scale: 1.0,
+    type: 'glow' as GradientType,
+    noise: 0.06,
   },
 } as const

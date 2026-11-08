@@ -4,7 +4,7 @@ Beautiful animated WebGL gradients for React. Create stunning, performant gradie
 
 ## Features
 
-- 🎨 **20 Gradient Types**: from Aurora, Mesh and Silk to Eclipse, Prism, Caustics, Glass and Nebula
+- 🎨 **21 Gradient Types**: from Aurora, Mesh and Silk to Eclipse, Prism, Caustics, Glass, Nebula and Glow
 - 🌊 **Blended Transitions**: changing type, colors or speed morphs the canvas instead of cutting
 - 🖱️ **Pointer Interaction**: an optional lens that swells the pattern under the cursor
 - 📦 **Zero Dependencies**: raw WebGL, about 11 kB gzipped
@@ -93,7 +93,7 @@ function App() {
 }
 ```
 
-Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`, `dream`, `borealis`, `magma`, `lagoon`, `andromeda`, `cathedral`, `atlas`, `reeded`, `maelstrom`, `newsprint`, `spectrum`, `sahara`, `twilight`, `mono`
+Available presets: `cosmic`, `matrix`, `electric`, `inferno`, `mystic`, `cyber`, `neon`, `plasma`, `dream`, `borealis`, `magma`, `lagoon`, `andromeda`, `cathedral`, `atlas`, `reeded`, `maelstrom`, `newsprint`, `spectrum`, `sahara`, `twilight`, `mono`, `gemini`, `halo`
 
 Presets can be combined with `config` — config values override the preset:
 
@@ -198,6 +198,7 @@ type RGB = {
 - `prism` - Bands of light split into three colors
 - `dunes` - Layered, drifting ridgelines
 - `horizon` - A soft glow rising from the bottom edge
+- `glow` - Light running around the edges of the frame
 
 `GRADIENT_TYPES` exports the full list as an array.
 
@@ -237,6 +238,25 @@ const colors = generateRandomColors()
 - The render loop stops while the canvas is offscreen or the tab is hidden.
 - The component limits device pixel ratio to 2.
 - If the browser drops the WebGL context, GradFlow rebuilds its program when the context is restored.
+
+## Expo and React Native
+
+`gradflow-expo` draws the same shaders and presets with `expo-gl`. It runs in Expo Go, development builds and on the web.
+
+```bash
+npx expo install gradflow-expo expo-gl
+```
+
+```tsx
+import { StyleSheet } from 'react-native'
+import { GradFlow } from 'gradflow-expo'
+
+<GradFlow preset={thinking ? 'halo' : 'gemini'} style={StyleSheet.absoluteFill}>
+  {/* your content */}
+</GradFlow>
+```
+
+See [`packages/expo`](./packages/expo) for the full API and [`examples/expo`](./examples/expo) for an assistant screen built with it.
 
 ## Requirements
 

@@ -1,0 +1,61 @@
+{
+  "name": "gradflow-expo",
+  "version": "0.1.0",
+  "description": "GradFlow for Expo and React Native. The same 21 animated shaders, drawn with expo-gl.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "react-native": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "react-native": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "react-native",
+    "expo",
+    "expo-gl",
+    "gradient",
+    "shader",
+    "animation",
+    "background",
+    "mesh-gradient"
+  ],
+  "author": "Meer Bahadin <meerbahadin@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meerbahadin/gradflow.git",
+    "directory": "packages/expo"
+  },
+  "homepage": "https://gradflow.meerbahadin.dev/docs#expo",
+  "bugs": {
+    "url": "https://github.com/meerbahadin/gradflow/issues"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "expo-gl": ">=14.0.0",
+    "react": ">=18.0.0",
+    "react-native": ">=0.74.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "expo-gl": "~58.0.4",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}

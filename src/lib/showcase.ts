@@ -38,6 +38,12 @@ export const TYPES: TypeInfo[] = [
     isNew: true,
   },
   {
+    type: 'glow',
+    blurb: 'Light running around the edges of the frame.',
+    config: from('halo'),
+    isNew: true,
+  },
+  {
     type: 'horizon',
     blurb: 'A soft glow rising from the bottom edge.',
     config: from('twilight'),

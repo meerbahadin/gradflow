@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import type { Metadata } from 'next'
 
+import Assistant from '@/components/blocks/assistant'
 import BlockSource from '@/components/blocks/block-source'
 import Player from '@/components/blocks/player'
 import Pricing from '@/components/blocks/pricing'
@@ -12,10 +13,11 @@ import Waitlist from '@/components/blocks/waitlist'
 export const metadata: Metadata = {
   title: 'Components',
   description:
-    'Sign-in, pricing, waitlist, stat and player components built on GradFlow, with their source.',
+    'Assistant, sign-in, pricing, waitlist, stat and player components built on GradFlow, with their source.',
 }
 
 const BLOCKS = [
+  { file: 'assistant.tsx', label: 'Assistant' },
   { file: 'sign-in.tsx', label: 'Sign in' },
   { file: 'pricing.tsx', label: 'Pricing' },
   { file: 'waitlist.tsx', label: 'Waitlist' },
@@ -48,13 +50,16 @@ export default function DemoPage() {
           Gradients, put to work.
         </h1>
         <p className='mt-5 text-pretty text-lg leading-relaxed text-subtle'>
-          Five pieces of interface with a GradFlow canvas somewhere inside.
-          They are all live, so sign in, flip the billing period and pause
-          the track.
+          Six pieces of interface with a GradFlow canvas somewhere inside.
+          They are all live, so ask the assistant something, sign in, flip
+          the billing period and pause the track.
         </p>
       </header>
 
       <div className='mt-14 grid gap-3 lg:grid-cols-12'>
+        <div className={`${frame} lg:col-span-12`}>
+          <Assistant />
+        </div>
         <div className={`${frame} lg:col-span-7`}>
           <SignIn />
         </div>
