@@ -8,11 +8,12 @@ import Pricing from '@/components/blocks/pricing'
 import SignIn from '@/components/blocks/sign-in'
 import StatCard from '@/components/blocks/stat-card'
 import Waitlist from '@/components/blocks/waitlist'
+import LibraryBanner from '@/components/showcase/library-banner'
 
 export const metadata: Metadata = {
   title: 'Components',
   description:
-    'Sign-in, pricing, waitlist, stat and player components built on GradFlow, with their source.',
+    'Sign-in, pricing, waitlist, stat and player components built on GradFlow, plus phone, Dynamic Island, product and glass screens, with their source.',
 }
 
 const BLOCKS = [
@@ -48,9 +49,9 @@ export default function DemoPage() {
           Gradients, put to work.
         </h1>
         <p className='mt-5 text-pretty text-lg leading-relaxed text-subtle'>
-          Five pieces of interface with a GradFlow canvas somewhere inside.
-          They are all live, so sign in, flip the billing period and pause
-          the track.
+          Five pieces of interface, each with a live gradient that answers
+          back. Type to wake the orb, drag the seats, join the list, switch
+          the range and skip the track.
         </p>
       </header>
 
@@ -72,6 +73,8 @@ export default function DemoPage() {
         </div>
       </div>
 
+      <LibraryBanner />
+
       <section className='mt-24 grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16'>
         <div>
           <p className='font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground'>
@@ -81,8 +84,8 @@ export default function DemoPage() {
             One file each.
           </h2>
           <p className='mt-4 text-pretty leading-relaxed text-subtle'>
-            Every component is a single file built from GradFlow and a few
-            Arc UI parts. Copy the one you need.
+            Every component is a single file built from GradFlow or the shared
+            Flow renderer, and a few Arc UI parts. Copy the one you need.
           </p>
         </div>
         <BlockSource blocks={sources} />

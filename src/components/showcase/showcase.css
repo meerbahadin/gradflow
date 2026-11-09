@@ -1,0 +1,141 @@
+/* Motion for the showcase pieces. Prefixed so nothing collides with
+   Tailwind utilities like `ring` or `animate-spin`. */
+
+.sc-no-scrollbar {
+  scrollbar-width: none;
+}
+.sc-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.sc-caret {
+  animation: sc-caret 1s steps(1) infinite;
+}
+@keyframes sc-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.sc-msg-in {
+  animation: sc-msg-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes sc-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+.sc-swap-in {
+  animation: sc-swap-in 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes sc-swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(10px);
+  }
+}
+
+@keyframes sc-orb-pulse {
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.sc-shimmer {
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.35) 0%, #fff 45%, rgb(255 255 255 / 0.35) 90%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sc-shimmer 1.6s linear infinite;
+}
+@keyframes sc-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+.sc-settle {
+  animation: sc-settle 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes sc-settle {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+}
+
+.sc-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: sc-draw 420ms cubic-bezier(0.4, 0, 0.2, 1) 180ms forwards;
+}
+@keyframes sc-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.sc-flare {
+  animation: sc-flare 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes sc-flare {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 1;
+    filter: brightness(1.5);
+  }
+  100% {
+    opacity: 0.55;
+  }
+}
+
+.sc-beat {
+  animation: sc-beat 0.652s ease-out infinite;
+}
+@keyframes sc-beat {
+  0% {
+    transform: scale(1.12);
+  }
+  60%,
+  100% {
+    transform: scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-caret,
+  .sc-msg-in,
+  .sc-swap-in,
+  .sc-shimmer,
+  .sc-settle,
+  .sc-flare,
+  .sc-beat {
+    animation: none;
+  }
+  .sc-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* library banner: a hovered tile's preview arrives quickly and softly */
+@keyframes sc-peek {
+  from { opacity: 0; transform: scale(.94) translateY(4px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.sc-peek {
+  animation: sc-peek 180ms cubic-bezier(.2, .8, .2, 1) both;
+  transform-origin: top left;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-peek { animation: none; }
+}
