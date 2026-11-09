@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { GITHUB_URL, NPM_URL } from '@/lib/showcase'
+import { Flow } from '@/components/showcase/flow/flow'
 import ButtonLink from './button-link'
 import GradientWordmark from './gradient-wordmark'
 import InstallCommand from './install-command'
@@ -17,7 +18,17 @@ const LINKS = [
 export default function SiteFooter() {
   return (
     <footer className='px-2 pb-2 sm:px-3 sm:pb-3'>
-      <div className='overflow-hidden rounded-(--radius-surface) border border-border bg-surface'>
+      {/* fluted glass behind the whole footer; the light behind it follows the cursor */}
+      <div className='on-gradient relative isolate overflow-hidden rounded-(--radius-surface) border border-border bg-[#0a0820]'>
+        <div className='absolute inset-0 -z-10'>
+          <Flow
+            config={{ type: 'flute', color1: '#6a4dff', color2: '#0a0820', color3: '#ff8f6b', speed: 0.4, scale: 1, noise: 0.05 }}
+            quality={0.75}
+            interactive
+          />
+          {/* keep the links at the bottom readable over the brightest flutes */}
+          <div className='absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent' />
+        </div>
         <div className='container pb-8 pt-16 sm:pt-24'>
           <div className='flex flex-col justify-between gap-10 lg:flex-row lg:items-end'>
             <h2 className='max-w-xl text-balance text-3xl font-medium leading-[1.05] sm:text-4xl'>
